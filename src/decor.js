@@ -1218,14 +1218,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       return { n, P, PL, LEN, BX, VEG, brutes: new Int32Array(brutes), sources, nM, M, MOff, MBX, eau: Number.isFinite(niveauEau) ? niveauEau : NaN };
     }
     // candidats de chaque surface végétalisable (format CSR), filtrés par recouvrement de boîtes ; seul le noyau s'en sert
-    function relier(D) {
+    // La liaison se joue aussi par plages de sources (repli sans ouvrier de la Route sans fin, une plage par image) :
+    // mêmes grilles, mêmes opérations dans le même ordre ; relier enchaîne les trois temps d'un trait.
+    function relierDebut(D) {
       const { n, BX, brutes, nM, MBX } = D;
       const gM = grille(nM, MBX), gC = grille(n, BX);
       const marquesM = new Uint32Array(nM), marquesC = new Uint32Array(n);
       const nb = brutes.length, CMO = new Int32Array(nb + 1), CCO = new Int32Array(nb + 1);
-      let CM = new Int32Array(1 << 16), CC = new Int32Array(1 << 16), nm = 0, nc = 0;
-      const tmp = new Int32Array(Math.max(nM, n));
-      for (let q = 0; q < nb; q++) {
+      return { D, gM, gC, marquesM, marquesC, nb, CMO, CCO, CM: new Int32Array(1 << 16), CC: new Int32Array(1 << 16), nm: 0, nc: 0,
+        tmp: new Int32Array(Math.max(nM, n)), q: 0 };
+    }
+    function relierPlage(L, fin) {
+      const { D, gM, gC, marquesM, marquesC, CMO, CCO, tmp } = L, { BX, brutes, MBX } = D, nb = Math.min(L.nb, fin);
+      let { CM, CC, nm, nc } = L, q = L.q;
+      for (; q < nb; q++) {
         const k = brutes[q], bx0 = BX[4 * k], bx1 = BX[4 * k + 1], bz0 = BX[4 * k + 2], bz1 = BX[4 * k + 3];
         let t = candidats(gM, marquesM, q + 1, bx0, bx1, bz0, bz1, tmp, 0);
         if (nm + t > CM.length) { const x = new Int32Array(Math.max(CM.length * 2, nm + t)); x.set(CM); CM = x; }
@@ -1238,8 +1244,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           if (bx0 < BX[4 * id + 1] - EPS && bx1 > BX[4 * id] + EPS && bz0 < BX[4 * id + 3] - EPS && bz1 > BX[4 * id + 2] + EPS) CC[nc++] = id; }
         CCO[q + 1] = nc;
       }
-      D.CM = CM.subarray(0, nm); D.CMO = CMO; D.CC = CC.subarray(0, nc); D.CCO = CCO;
+      L.CM = CM; L.CC = CC; L.nm = nm; L.nc = nc; L.q = q;
+      return q >= L.nb;
+    }
+    function relierFin(L) {
+      const D = L.D;
+      D.CM = L.CM.subarray(0, L.nm); D.CMO = L.CMO; D.CC = L.CC.subarray(0, L.nc); D.CCO = L.CCO;
       return D;
+    }
+    function relier(D) {
+      const L = relierDebut(D);
+      relierPlage(L, L.nb);
+      return relierFin(L);
     }
     // Empreinte de la géométrie lue (lot 28C) : tout ce que lisent le noyau et la finition, sauf les couleurs, que la
     // saison change. Positions (P), surfaces végétalisables (brutes), masques (M, MOff) et eau déterminent PL, LEN, BX,
@@ -1262,11 +1278,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
     // ---------------------------------------------------------------- noyau JavaScript (transcription directe en C : herbier.c)
     // Arène : polygones de sommets (x, y, z) consécutifs. Deux listes de morceaux (début, nombre) en alternance.
-    function noyauJS(D) {
-      let A = new Float64Array(1 << 20); let haut = 0;
+    // plage (facultative, repli sans ouvrier) : { q, fin } et les tampons de la plage d'avant. Le noyau reprend à la
+    // source q, s'arrête avant fin, écrit à la suite de la même sortie et range ses tampons : des plages enchaînées
+    // écrivent exactement ce qu'écrit un passage d'un trait (chaque source repart de zéro, la sortie ne fait que s'allonger).
+    function noyauJS(D, plage = null) {
+      let A = plage?.A || new Float64Array(1 << 20); let haut = 0;
       const assurer = m => { if (haut + m > A.length) { const x = new Float64Array(Math.max(A.length * 2, haut + m)); x.set(A); A = x; } };
-      let L1 = new Int32Array(4096), L2 = new Int32Array(4096);
-      let OUT = new Float64Array(1 << 18), no = 0;
+      let L1 = plage?.L1 || new Int32Array(4096), L2 = plage?.L2 || new Int32Array(4096);
+      let OUT = plage?.OUT || new Float64Array(1 << 18), no = plage?.no || 0;
       const DST = new Float64Array(256);
       // découpe du polygone (src, n) par d(v) = sg × (k0 + k1·x + k2·z + k3·(x − ex)·… ) : trois formes, comme l'original
       // mode 0 : eau, d = y − e − 0.08 ; mode 1 : arête, d = (bx − ax)(vz − az) − (bz − az)(vx − ax) ; mode 2 : dessus, d = dh + dx·x + dz·z − off
@@ -1314,7 +1333,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       const { P, PL, LEN, VEG, brutes, M, MOff, CM, CMO, CC, CCO, eau } = D;
       const MASQUE = new Float64Array(64); // masque issu d'une autre couche, en (x, z)
-      for (let q = 0; q < brutes.length; q++) {
+      const q0 = plage ? plage.q : 0, q1 = plage ? Math.min(plage.fin, brutes.length) : brutes.length;
+      for (let q = q0; q < q1; q++) {
         const s = brutes[q]; haut = 0;
         assurer(9); for (let u = 0; u < 9; u++) A[u] = P[9 * s + u]; haut = 9;
         let nL1 = 0;
@@ -1351,6 +1371,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           }
         }
       }
+      if (plage) { plage.A = A; plage.L1 = L1; plage.L2 = L2; plage.OUT = OUT; plage.no = no; plage.q = q1; }
       return OUT.subarray(0, no);
     }
 
@@ -1400,25 +1421,63 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       return { triangles, surface, aireBrute, aire: aireAccotements + aireTerrain, aireAccotements, aireTerrain, trianglesSources: D.brutes.length, masques: D.nM };
     }
-    return { lire, relier, empreinte, noyau: noyauJS, finir };
+    return { lire, relier, relierDebut, relierPlage, relierFin, empreinte, noyau: noyauJS, finir };
   })();
   // Comptes de l'herbier (lot 28C, lus par verifications/herbier-saisons.test.mjs) : découpes calculées, découpes reprises.
   const COMPTES_HERBIER = { decoupes: 0, reprises: 0, wasm: 0 };
   // ancien : l'herbier gardé pour la même clé, d'une autre saison. Sa découpe est reprise si la géométrie lue a la même
   // empreinte ; seules les couleurs, relues dans les nappes de cette saison, changent alors.
-  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien, wasm) {
-    const D = HERBIER.lire(c, nappes, lots, lim, enceinte, niveauEau), empreinte = HERBIER.empreinte(D);
+  // L'herbier s'ouvre d'un trait (creerHerbier) ou par étapes, sous un budget par image (repli sans ouvrier de la
+  // Route sans fin, cadence = { budget } en millisecondes) : la découpe passe alors par le noyau JS, par plages de
+  // sources, identique au bit au noyau WebAssembly (opérations exactes, même ordre). Même herbier dans les deux cas.
+  function* creerHerbierEtapes(c, nappes, lots, lim, enceinte, niveauEau, ancien, wasm, cadence) {
+    const D = HERBIER.lire(c, nappes, lots, lim, enceinte, niveauEau);
+    if (cadence) yield 'herbier-lecture';
+    const empreinte = HERBIER.empreinte(D);
     const reprise = !!ancien && ancien.empreinte === empreinte;
     let decoupe;
     if (reprise) {
       // La découpe ne dépend que de la géométrie : elle se relit dans les triangles de l'ancien herbier (les mêmes
       // nombres) et l'indice de leur surface source, seul gardé à part (4 octets par triangle au lieu de 88).
-      const T = ancien.triangles, S = ancien.sourcesTriangles; decoupe = new Float64Array(11 * T.length);
-      for (let k = 0, o = 0; k < T.length; k++) {
-        const p = T[k].points; decoupe[o++] = S[k];
-        for (let j = 0; j < 3; j++) { decoupe[o++] = p[j][0]; decoupe[o++] = p[j][1]; decoupe[o++] = p[j][2]; }
-        decoupe[o++] = T[k].aire;
+      // (Les longues boucles passent par des fonctions ordinaires : V8 les fait tourner moins vite dans un générateur.)
+      decoupe = (() => {
+        const T = ancien.triangles, S = ancien.sourcesTriangles, sortie = new Float64Array(11 * T.length);
+        for (let k = 0, o = 0; k < T.length; k++) {
+          const p = T[k].points; sortie[o++] = S[k];
+          for (let j = 0; j < 3; j++) { sortie[o++] = p[j][0]; sortie[o++] = p[j][1]; sortie[o++] = p[j][2]; }
+          sortie[o++] = T[k].aire;
+        }
+        return sortie;
+      })();
+    } else if (cadence) {
+      // plages calibrées sur le budget : la taille suivante vise le budget au rythme mesuré sur la précédente
+      const horloge = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+      const prochain = (pas, ms) => Math.max(256, Math.min(2 * pas, 65536, Math.round(pas * cadence.budget / Math.max(.05, ms))));
+      yield 'herbier-empreinte';
+      const L = HERBIER.relierDebut(D);
+      yield 'herbier-grilles';
+      for (let pas = 2048, fini = false; !fini;) {
+        const t0 = horloge();
+        fini = HERBIER.relierPlage(L, L.q + pas);
+        pas = prochain(pas, horloge() - t0);
+        yield 'herbier-liaison';
       }
+      HERBIER.relierFin(L);
+      // Le coût d'une source suit ses candidats (masques et recouvrements) : une plage se dimensionne sur leur cumul,
+      // au rythme mesuré sur les plages d'avant, et le noyau y reprend ses tampons.
+      const nb = D.brutes.length, CMO = D.CMO, CCO = D.CCO, cout = q => q + CMO[q] + CCO[q], plage = { q: 0, fin: 0 };
+      for (let parMs = 0; plage.q < nb;) {
+        const depart = cout(plage.q), cible = depart + (parMs ? cadence.budget * parMs : 512);
+        let bas = plage.q + 1, haut = nb;
+        while (bas < haut) { const m = (bas + haut + 1) >> 1; if (cout(m) <= cible) bas = m; else haut = m - 1; }
+        plage.fin = bas;
+        const t0 = horloge();
+        HERBIER.noyau(D, plage);
+        const ms = horloge() - t0, fait = cout(plage.q) - depart;
+        if (ms > .25) parMs = parMs ? (parMs + fait / ms) / 2 : fait / ms;
+        yield 'herbier-decoupe';
+      }
+      decoupe = plage.OUT ? plage.OUT.subarray(0, plage.no) : new Float64Array(0);
     } else {
       HERBIER.relier(D);
       decoupe = wasm && B.herbierWasm?.decouper(D);
@@ -1426,10 +1485,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       else decoupe = HERBIER.noyau(D);
     }
     COMPTES_HERBIER[reprise ? 'reprises' : 'decoupes']++;
-    const herbier = HERBIER.finir(D, decoupe), sourcesTriangles = new Int32Array(herbier.triangles.length);
-    for (let k = 0; k < sourcesTriangles.length; k++) sourcesTriangles[k] = decoupe[11 * k];
+    if (cadence) yield 'herbier-decoupe';
+    const herbier = HERBIER.finir(D, decoupe), sourcesTriangles = (n => {
+      const sortie = new Int32Array(n);
+      for (let k = 0; k < n; k++) sortie[k] = decoupe[11 * k];
+      return sortie;
+    })(herbier.triangles.length);
     Object.defineProperties(herbier, { empreinte: { value: empreinte }, sourcesTriangles: { value: sourcesTriangles } });
     return herbier;
+  }
+  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien, wasm) {
+    const etapes = creerHerbierEtapes(c, nappes, lots, lim, enceinte, niveauEau, ancien, wasm, null);
+    for (;;) { const r = etapes.next(); if (r.done) return r.value; }
   }
 
   // ---------------------------------------------------------------- objets
@@ -1965,7 +2032,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return secteurs;
   }
 
+  // Le décor se bâtit en étapes : le jeu et l'ouvrier de la Route sans fin les enchaînent d'un trait (construire),
+  // le repli sans ouvrier en joue une par image (construireEtapes). Même décor au bit près.
   function construire(c, options = {}) {
+    const etapes = construireEtapes(c, options);
+    for (;;) { const r = etapes.next(); if (r.done) return r.value; }
+  }
+  // cadence (facultative) : { budget } en millisecondes ; le repli sans ouvrier de la Route sans fin la passe pour que
+  // l'herbier et la prairie se bâtissent aussi par tranches sous ce budget. Sans elle, mêmes étapes, aucune tranche.
+  function* construireEtapes(c, options = {}, cadence = null) {
     const ovale=c.partition==='ovale-des-forges' && B.ovaleForgesDecor;
     if (c.stands && c.stands.dBox === undefined) B.circuit.preparerStands(c);
     const baseTheme = THEMES[c.theme] || (B.destinations && B.destinations.THEMES && B.destinations.THEMES[c.theme]) || THEMES.foret;
@@ -1999,8 +2074,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const neigeVolume = decorCinema || options.neigeVolume === true;
     const horizonMode = options.horizon || null;
     const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord, organique, neigeVolume);
+    yield 'route';
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord,
       c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true, options.cacheRelief, decorCinema, neigeVolume, horizonMode);
+    yield 'terrain';
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -2036,6 +2113,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     terrain.raccorderPigments?.();
+    yield 'saison';
     // Réserver aussi les emprises de décor qui débordent par-dessus l’aire de service.
     const Sstand=c.stands, emprisesVerifiees=new Set();
     let xMinStand=Infinity,xMaxStand=-Infinity,zMinStand=Infinity,zMaxStand=-Infinity;
@@ -2157,6 +2235,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
 
+    yield 'glissieres';
     // Tunnel de Haut-Col (circuit.js, c.tunnel) : murs de béton aux limites, voûte, lampes, deux portails dans la roche
     // et la montagne autour (flancs posés au sol contre les murs, crête sur la voûte, rien ne dépasse à l'intérieur).
     // L'intérieur est éclairé « dedans » (outdoor: false : ni soleil ni ciel, seulement les lampes) ; la chaussée y est
@@ -2336,6 +2415,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
 
+    yield 'tunnel';
     // Repères de freinage (3, 2, 1 barres) et murs de pneus avant les virages serrés.
     const virages = [];
     for (let i = 0; i < c.n; i++) {
@@ -2486,6 +2566,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
 
+    yield 'amenagements';
     // Les candidats historiques restent bornés et gardent leur hasard propre. Le champ de boisement
     // laisse des trouées, indépendamment du côté de route ; un arbre absent n'a pas de solide résiduel.
     const positionsArbres = [], sourcesFeuilles = [];
@@ -2674,6 +2755,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
 
+    yield 'arbres';
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
     const villages = ovale || estMarseille || th.volcanique || th.aride || th.karstique || th.pacifique ? 0 : th.eau !== undefined ? 3 : 4;
     for (let v = 0; v < villages; v++) {
@@ -2842,6 +2924,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (voie.objets.length) groupes.set('architecture-voie', { objets: voie.objets, loin: voie.loin, bascule: 260 });
     }
 
+    yield 'rochers';
     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
     if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, organique,
@@ -2916,6 +2999,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         if (!l.objets.length) casesArbres.delete(cle);
       }
     }
+    yield 'lieux';
     // Finition des lots : sphère englobante et portée.
     const lots = [];
     const bornerMobilier = organique ? mesureLotsMobilier() : null;
@@ -2981,7 +3065,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }))
     }) });
     let herbier = null;
-    const ouvrirHerbier = () => {
+    function* ouvrirHerbierEtapes(cadenceHerbier) {
       if (herbier) return herbier;
       let cache = HERBIERS.get(c); if (!cache) HERBIERS.set(c, cache = new Map());
       const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '') + (options.decorProgressif ? ':corridor' : '') + (decorCinema ? ':cinema' : '') + (horizonMode ? ':' + horizonMode : '');
@@ -2990,11 +3074,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (!herbier) {
         // Lot 28C : une autre saison ne change que les couleurs du sol ; l'herbier gardé prête sa découpe quand la
         // géométrie lue est la même (creerHerbier compare les empreintes), sinon tout se refait.
-        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier, options.herbierWasm !== false);
+        herbier = cadenceHerbier
+          ? yield* creerHerbierEtapes(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier, options.herbierWasm !== false, cadenceHerbier)
+          : creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier, options.herbierWasm !== false);
         // Garder une seule palette par clé évite d'accumuler quatre grands caches de sol par circuit.
         cache.set(cle, { saison: couleurSaison, herbier });
       }
       return herbier;
+    }
+    const ouvrirHerbier = () => {
+      if (herbier) return herbier;
+      const etapes = ouvrirHerbierEtapes(null);
+      for (;;) { const r = etapes.next(); if (r.done) return r.value; }
     };
     Object.defineProperties(decor, {
       // lots lus par l'herbier, avant le regroupement des arbres en cases de l'image (lotsImage) : la référence
@@ -3007,6 +3098,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       surfaceHerbe: { value: (x, z, sortie) => terrain.niveauEauA && Number.isFinite(terrain.niveauEauA(x,z)) ? null : ouvrirHerbier().surface(x, z, sortie) },
     });
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
+    yield 'finition';
     // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;
     // vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles. Le module choisit
     // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres. La densité nommée
@@ -3017,16 +3109,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // les emprises du mobilier, avant que les lots d'herbe ne soient ajoutés.
     const bosquets = organique && options.vegetation === true && B.bosquets && vegetationQualite !== 'off'
       ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite, { progressif: options.decorProgressif === true, decorCinema, horizon: horizonMode }) : [];
+    yield 'bosquets';
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
-      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite, organique, saison,
-        // Les biomes sans implantation sortent avant de demander la découpe des prairies.
-        get surfaces() {
-          if (vegetationQualite === 'low') return null;
-          if (!organique && (th.volcanique || th.aride || th.karstique || th.pacifique)) return null;
-          if (organique && th.aride) return null;
-          return ouvrirHerbier();
-        },
-        ecologie });
+      // Les biomes sans implantation sortent avant de demander la découpe des prairies.
+      const prairie = vegetationQualite !== 'low' && !(!organique && (th.volcanique || th.aride || th.karstique || th.pacifique)) && !(organique && th.aride);
+      const optionsPlantes = { limites: lim, interroger, qualite: vegetationQualite, organique, saison,
+        get surfaces() { return prairie ? ouvrirHerbier() : null; },
+        // même herbier, au même moment de la plantation, mais ouvert par étapes (sous la cadence s'il y en a une)
+        *surfacesEtapes() { return prairie ? yield* ouvrirHerbierEtapes(cadence) : null; },
+        cadence,
+        ecologie };
+      const v = B.vegetation.construireEtapes ? yield* B.vegetation.construireEtapes(c, optionsPlantes) : B.vegetation.construire(c, optionsPlantes);
+      yield 'plantes';
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) {
@@ -3052,6 +3146,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         aireAccotements: v.aireAccotements, aireTerrain: v.aireTerrain,
         aireNue: v.aireNue, aireRiche: v.aireRiche, brinsRiches: v.brinsRiches };
     }
+    yield 'vegetation';
     // Les solides PhysX et l'herbier conservent leurs listes ; aucune instance de
     // bosquet n'entre dans les collisions, ni dans les masques de la prairie.
     if (bosquets.length) decor.lots = decor.lots.concat(bosquets);
@@ -3086,6 +3181,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return decor;
   }
 
-  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, planGradins, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
+  B.decor = { construire, construireEtapes, THEMES, angles, base, limites, hauteurRoute, cadre, planGradins, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
     ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur, creerFluxDecor, comptesHerbier: COMPTES_HERBIER };
 })(globalThis.BITUME = globalThis.BITUME || {});

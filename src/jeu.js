@@ -382,12 +382,19 @@
   }
   // Bascule GPU progressive d'une scène Route sans fin déjà bâtie en Worker : zéro préparation synchrone des 300 lots,
   // réutilisation des pipelines/textures d'herbe WebGPU et partage immédiat des nappes immuables avec les rétroviseurs.
+  // Pires durées (ms) des sections de la bascule Route sans fin, lues par le banc (tools/banc-navigateur.mjs --mode sans-fin).
+  const chronoBascule = {};
+  function noterBascule(nom, t0) { const ms = +(performance.now() - t0).toFixed(2); if (!(chronoBascule[nom] >= ms)) chronoBascule[nom] = ms; return performance.now(); }
   function installerPrepareSansFin(i, pret, posesProches) {
     const { c, decor, params } = pret;
     const { v, ancre, vegetationQualite, saison, matieresActives } = params;
+    const tDebut = performance.now();
+    let t = tDebut;
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
+    t = noterBascule('nappes', t);
     rendu.setLots(decor.lots, { staticBounds: true, progressif: true });
+    t = noterBascule('lots', t);
     curseurMaintien = 0;
     if (posesProches?.length && rendu.preparerLot) {
       for (let k = 0; k < decor.lots.length; k++) {
@@ -396,13 +403,17 @@
         const lim = 380 + (l.rayon || 0);
         for (let p = 0; p < posesProches.length; p++) {
           const q = posesProches[p], dx = lc[0] - q[0], dz = lc[2] - q[2];
+          // derrière le pilote, le lot attend l'entretien tournant (rendreImage) : la vue avant n'en a pas besoin
+          if (q[3] !== undefined && dx * q[3] + dz * q[4] < -40 - (l.rayon || 0)) continue;
           if (dx * dx + dz * dz <= lim * lim) { rendu.preparerLot(k, false); break; }
         }
       }
     }
+    t = noterBascule('preparer', t);
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
     const prairies = scene?.prairies || [];
     for (const prairie of prairies) prairie?.changerDecor?.(decor);
+    t = noterBascule('prairie', t);
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const etendueOmbre = reglages.ombres === 'ultra' ? 96 : OMBRE;
     const ombre = { extent: etendueOmbre, depth: 2 * (etendueOmbre * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
@@ -426,13 +437,17 @@
           const lim = 260 + (l.rayon || 0);
           for (let p = 0; p < posesProches.length; p++) {
             const q = posesProches[p], dx = lc[0] - q[0], dz = lc[2] - q[2];
+            // les glaces regardent derrière : les lots de devant attendent l'entretien tournant
+            if (q[3] !== undefined && dx * q[3] + dz * q[4] > 40 + (l.rayon || 0)) continue;
             if (dx * dx + dz * dz <= lim * lim) { retro.rendu.preparerLot(k, false); break; }
           }
         }
       }
       if (retro.vuePublic) { retro.vuePublic.liberer(); retro.vuePublic = null; }
       retro.scene = scene;
+      t = noterBascule('retro', t);
     }
+    noterBascule('total', tDebut);
     return scene;
   }
   // Douze champs préalloués : vue principale et deux glaces par pilote local, jusqu'à quatre (lot C). Les six
@@ -1650,6 +1665,11 @@
     }
     S.c = c; co.c = c;
     if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
+    // sens de marche de chaque pilote sur le nouveau tracé : la bascule ne prépare d'emblée que les lots qu'il regarde
+    for (let k = 0, h = 0; k < co.voitures.length; k++) if (co.voitures[k].humain) {
+      const q = B.circuit.echantillon(c, co.voitures[k].etat.s), P = posesProches[h++];
+      if (P) { P[3] = Math.cos(q.cap); P[4] = Math.sin(q.cap); }
+    }
     if (pret && pret.c === c) {
       const sc = installerPrepareSansFin(S.i, pret, posesProches);
       S.cDecor = c; S.sc = sc; S.cleStationDecor = S.seance.cleStation;
@@ -7482,7 +7502,7 @@
     get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); },
     // chronomètre GPU du volet, fermé par défaut (ses requêtes coûtent) ; cadence : période, diviseur, essais
     get chronoGPU() { return B.mesures.chronoGPU; }, set chronoGPU(v) { B.mesures.chrono(!!v, rendu); },
-    get cadence() { return B.cadence.etat(cadence); } };
+    get cadence() { return B.cadence.etat(cadence); }, get chronoBascule() { return Object.assign({}, chronoBascule); } };
   function publierOutils() {
     Object.defineProperty(window, 'BITUME_JEU', { value: outilsJeu, configurable: true, enumerable: true, writable: true });
     return outilsJeu;

@@ -77,7 +77,8 @@ test('compilateur absent, refus mémoire, débordement C et grandes tailles revi
 
 test('raccord du jeu : la vitrine et les reprises de saison ne sollicitent jamais WebAssembly', () => {
   const decor = lire('src/decor.js').toString(), jeu = lire('src/jeu.js').toString();
-  const fonction = decor.match(/^  function creerHerbier\([\s\S]*?^  }$/m)[0];
+  // creerHerbier enchaîne d'un trait les étapes de creerHerbierEtapes (le repli sans ouvrier les joue par images)
+  const fonction = decor.match(/^  function\* creerHerbierEtapes\([\s\S]*?^  }$/m)[0] + '\n' + decor.match(/^  function creerHerbier\([\s\S]*?^  }$/m)[0];
   const appels = { wasm: 0, js: 0, relier: 0 }; let accepte = true;
   const contexte = { HERBIER: { lire: () => ({}), empreinte: () => 'identique', relier: D => { appels.relier++; return D; },
     noyau: () => { appels.js++; return new Float64Array(0); }, finir: () => ({triangles: []}) },

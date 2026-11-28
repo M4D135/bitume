@@ -1191,7 +1191,7 @@
   // que de case praticable en case praticable : elle ne peut pas atteindre la route ni son dégagement.
   const PORTEE_HABITAT = 180, R_EXACT = 96, MARGE_OBST = .7, OBST = 1, ENCEINTE = 2, TUNNEL = 4, DEGAGEMENT = 8, R_ENCEINTE = 140, R_TUNNEL = 70;
   const FORMES_DECOR = new Set(['box', 'cylinder', 'bevel', 'octa', 'sphere', 'wedge', 'ring']);
-  function grille(c, decor) {
+  function grilleAllouer(c, decor) {
     const T = decor.maillageSol || { sol: decor.solRendu || decor.sol };
     let ax0 = Infinity, ax1 = -Infinity, az0 = Infinity, az1 = -Infinity;
     for (let i = 0; i < c.n; i++) { const x = c.x[i], z = c.z[i]; if (x < ax0) ax0 = x; if (x > ax1) ax1 = x; if (z < az0) az0 = z; if (z > az1) az1 = z; }
@@ -1221,9 +1221,13 @@
     G.eauLocale = decor.lagon && decor.niveauEauA ? new Uint32Array(Math.ceil(N/32)) : null;
     G.lagon = decor.lagon;
     G.niveauLagon = decor.lagon?.niveau;
-    // Distance exacte aux échantillons de l'axe, tous les 2 m, jusqu'à 96 m ; bord du côté correspondant.
+    return G;
+  }
+  // Les échantillons de l'axe se traitent dans l'ordre, au plus proche strict : des plages enchaînées laissent la même grille.
+  function grilleDistances(G, c, s0, s1) {
+    const { x0, z0, nx, nz, lignes, d, bords } = G;
     const r = Math.ceil(R_EXACT / CASE), R2 = R_EXACT * R_EXACT;
-    for (let s = 0; s < c.n; s++) {
+    for (let s = s0; s < s1; s++) {
       const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE), sa = Math.sin(c.cap[s]), ca = Math.cos(c.cap[s]);
       for (let j = Math.max(0, cj - r), jn = Math.min(nz - 1, cj + r); j <= jn; j++) {
         const dz = z0 + (j + .5) * CASE - pz, dz2 = dz * dz, ligne = lignes[j];
@@ -1237,6 +1241,9 @@
         }
       }
     }
+  }
+  function grilleChamps(G, c) {
+    const { x0, z0, nz, N, premier, fin, lignes, d, drap } = G, R2 = R_EXACT * R_EXACT;
     for (let k = 0; k < N; k++) d[k] = d[k] < R2 ? Math.sqrt(d[k]) : 1e5;
     // Garde au-delà des limites réelles de conduite, sans distance arbitraire de 34 m à l'axe.
     // Le rayon de chaque animal ajoute sa propre marge dans praticable().
@@ -1269,6 +1276,9 @@
         }
       }
     }
+  }
+  function grilleSol(G, c, decor) {
+    const { x0, z0, nx, nz, premier, fin, lignes, d, h, ny, arbres, drap, T } = G;
     for (let j = 0; j < nz; j++) for (let i = premier[j]; i < fin[j]; i++) {
       const k = lignes[j] + i;
       if (d[k] <= PORTEE_HABITAT) {
@@ -1334,6 +1344,27 @@
       for (let s = t.debut - 60; s <= fin + 60; s += 8) disque(s, R_TUNNEL, TUNNEL);
     }
     return G;
+  }
+  // La grille se bâtit d'un trait (grille) ou par étapes sous un budget par image (cadence = { budget } en ms : repli
+  // sans ouvrier de la Route sans fin, distances exactes par plages d'échantillons). Même grille au bit près.
+  function* grilleEtapes(c, decor, cadence = null) {
+    const G = grilleAllouer(c, decor);
+    if (!cadence) { grilleDistances(G, c, 0, c.n); grilleChamps(G, c); return grilleSol(G, c, decor); }
+    const horloge = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    yield 'animaux-grille';
+    for (let s = 0, pas = 128; s < c.n;) {
+      const t0 = horloge(), fin = Math.min(c.n, s + pas);
+      grilleDistances(G, c, s, fin); s = fin;
+      pas = Math.max(16, Math.min(2 * pas, Math.round(pas * cadence.budget / Math.max(.05, horloge() - t0))));
+      yield 'animaux-distances';
+    }
+    grilleChamps(G, c);
+    yield 'animaux-champs';
+    return grilleSol(G, c, decor);
+  }
+  function grille(c, decor) {
+    const etapes = grilleEtapes(c, decor);
+    for (;;) { const r = etapes.next(); if (r.done) return r.value; }
   }
   function cellule(G, x, z) {
     const i = Math.floor((x - G.x0) / CASE), j = Math.floor((z - G.z0) / CASE);
@@ -2326,6 +2357,6 @@
   }
 
   B.animaux = { PAS, MAX_VUES, D_MIN, QUALITES, BUDGETS, ESPECES, BIOMES, MODELES, FORMES, NOMS_ETATS, PIECES_MAX: MAX_PIECES,
-    BANDES_ABORDS, GARDE_BORD, PORTEE_VUES, MAX_CHAMPS, selectionnerVues, creer, grille, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
+    BANDES_ABORDS, GARDE_BORD, PORTEE_VUES, MAX_CHAMPS, selectionnerVues, creer, grille, grilleEtapes, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
     get trianglesFormes() { return trianglesFormes; }, dureeChargement };
 })(globalThis.BITUME = globalThis.BITUME || {});

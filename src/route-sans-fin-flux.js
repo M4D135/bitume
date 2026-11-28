@@ -51,6 +51,7 @@
   ];
 
   const MAILLE_HERBIER = 32;
+  const maintenant = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
   function cleCaseHerbier(x, z) { return (x + 1048576) * 2097152 + (z + 1048576); }
 
   // Sérialise les triangles de `decor.herbier` en un Float32Array compact (19 flottants/triangle)
@@ -172,16 +173,27 @@
     return c;
   }
 
-  function executerPreparationCPU(BRef, req) {
+  // Les étapes de la préparation : l'ouvrier les enchaîne d'un trait, le repli sans ouvrier en joue une par image.
+  function* etapesPreparation(BRef, req, pourOuvrier) {
     const c = construireCircuitFenetre(BRef, req);
-    const decor = BRef.decor.construire(c, req.decorOptions);
+    yield 'circuit';
+    // sans ouvrier, l'herbier et la prairie se bâtissent aussi par tranches de quelques millisecondes (une par image)
+    const decor = BRef.decor.construireEtapes
+      ? yield* BRef.decor.construireEtapes(c, req.decorOptions, pourOuvrier ? null : { budget: 6 })
+      : BRef.decor.construire(c, req.decorOptions);
+    yield 'decor';
     if (BRef.obstacles) c.obstacles = BRef.obstacles.creer(decor.obstacles);
     const vegetationQualite = req.decorOptions.vegetationQualite;
     const besoinHerbier = req.decorOptions.vegetation !== false && vegetationQualite !== 'off' && vegetationQualite !== 'low';
     const herbierPlat = besoinHerbier ? empaqueterHerbier(decor.herbier) : null;
+    yield 'herbier';
     const extraitPhysX = BRef.solidesPhysX.extraire(c, decor);
-    const grilleAnimaux = req.avecAnimaux && BRef.animaux?.grille ? BRef.animaux.grille(c, decor) : null;
+    yield 'physx';
+    const grilleAnimaux = !(req.avecAnimaux && BRef.animaux?.grille) ? null
+      : BRef.animaux.grilleEtapes ? yield* BRef.animaux.grilleEtapes(c, decor, pourOuvrier ? null : { budget: 6 })
+        : BRef.animaux.grille(c, decor);
     if (grilleAnimaux) { grilleAnimaux.lagon = null; grilleAnimaux.T = null; }
+    yield 'animaux';
     const maillageSol = decor.maillageSol || null;
     const saisonId = decor.saison?.id || req.decorOptions.saison || null;
     const sourcesFeuilles = decor.sourcesFeuilles || [];
@@ -195,7 +207,8 @@
         vertexTint: n.vertexTint,
         surfaceType: n.surfaceType || null
       })),
-      lots: decor.lots,
+      // les lots progressifs des bosquets partent avec leur semis, sans leurs fonctions de préparation
+      lots: pourOuvrier && BRef.bosquets && BRef.bosquets.serialiser ? decor.lots.map(BRef.bosquets.serialiser) : decor.lots,
       railsVirages: decor.railsVirages,
       atmosphere: decor.atmosphere,
       portique: decor.portique,
@@ -210,13 +223,35 @@
     };
     return { c, decorPur, maillageSol, saisonId, sourcesFeuilles, qualite, herbierPlat, extraitPhysX, grilleAnimaux };
   }
+  function executerPreparationCPU(BRef, req, pourOuvrier) {
+    const g = etapesPreparation(BRef, req, pourOuvrier);
+    for (;;) { const r = g.next(); if (r.done) return r.value; }
+  }
+
+  // L'ouvrier envoie les lots par paquets d'environ POIDS_PAQUET objets : le fil principal
+  // désérialise un paquet par image au lieu de tout le décor d'un coup.
+  const POIDS_PAQUET = 1200;
+  function decouperLots(lots) {
+    const paquets = [];
+    let courant = [], poids = 0;
+    for (const l of lots || []) {
+      const p = 1 + (l && l.objets ? l.objets.length : 0) + (l && l.loin ? l.loin.length : 0);
+      if (courant.length && poids + p > POIDS_PAQUET) { paquets.push(courant); courant = []; poids = 0; }
+      courant.push(l); poids += p;
+    }
+    if (courant.length) paquets.push(courant);
+    return paquets;
+  }
 
   function creerWorkerBlob() {
     if (typeof Worker === 'undefined' || typeof Blob === 'undefined' || typeof URL === 'undefined' || typeof document === 'undefined') return null;
+    // ?ouvrier=non : la séance se passe d'ouvrier, comme un navigateur qui les refuserait (essai du repli au banc)
+    if (typeof location !== 'undefined' && /[?&]ouvrier=non(&|$)/.test(location.search || '')) return null;
     const table = new Map();
     for (const s of document.scripts || []) {
       const txt = s.textContent || '';
-      const m = /^\/\/ ---- ([^\n]+) ----\n/.exec(txt);
+      // construire.py écrit « <script>\n// ---- nom ---- » : le texte du script commence par ce saut de ligne
+      const m = /^\s*\/\/ ---- ([^\n]+) ----\n/.exec(txt);
       if (m) table.set(m[1].trim(), txt);
     }
     const morceaux = [
@@ -231,14 +266,19 @@
     morceaux.push(
       'const empaqueterHerbier = ', empaqueterHerbier.toString(), ';\n',
       'const construireCircuitFenetre = ', construireCircuitFenetre.toString(), ';\n',
+      'const etapesPreparation = ', etapesPreparation.toString(), ';\n',
       'const executerPreparationCPU = ', executerPreparationCPU.toString(), ';\n',
+      'const POIDS_PAQUET = ', String(POIDS_PAQUET), ';\n',
+      'const decouperLots = ', decouperLots.toString(), ';\n',
       `self.onmessage = function (ev) {
         const msg = ev.data;
         if (!msg || msg.t !== 'preparer') return;
         try {
-          const res = executerPreparationCPU(self.BITUME, msg.req);
+          const res = executerPreparationCPU(self.BITUME, msg.req, true);
+          const paquets = decouperLots(res.decorPur.lots);
+          res.decorPur.lots = null;
           const transferts = [], vus = new Set();
-          const pousser = buf => { if (buf instanceof ArrayBuffer && !vus.has(buf)) { vus.add(buf); transferts.push(buf); } };
+          const pousser = (buf, liste) => { if (buf instanceof ArrayBuffer && !vus.has(buf)) { vus.add(buf); (liste || transferts).push(buf); } };
           for (const n of res.decorPur.nappes) { pousser(n.sommets?.buffer); pousser(n.indices?.buffer); }
           if (res.maillageSol?.H) pousser(res.maillageSol.H.buffer);
           if (res.herbierPlat) pousser(res.herbierPlat.buffer);
@@ -247,7 +287,12 @@
             for (const k of ['premier', 'fin', 'lignes', 'd', 'bords', 'h', 'ny', 'arbres', 'drap', 'eauLocale'])
               if (res.grilleAnimaux[k]?.buffer) pousser(res.grilleAnimaux[k].buffer);
           }
-          self.postMessage({ t: 'pret', id: msg.id, cle: msg.cle, station: msg.req.station, cleStation: msg.cleStation, res }, transferts);
+          self.postMessage({ t: 'pret', id: msg.id, cle: msg.cle, station: msg.req.station, cleStation: msg.cleStation, res, paquets: paquets.length }, transferts);
+          for (let k = 0; k < paquets.length; k++) {
+            const tr = [];
+            for (const l of paquets[k]) pousser(l?.semisProgressif?.semis?.buffer, tr);
+            self.postMessage({ t: 'lots', id: msg.id, k, lots: paquets[k] }, tr);
+          }
         } catch (err) {
           self.postMessage({ t: 'erreur', id: msg.id, cle: msg.cle, message: String(err && err.stack || err) });
         }
@@ -270,17 +315,19 @@
     }
   }
 
+  // Réhydratation légère du décor reçu : tout sauf la grille de l'herbier et le flux du décor,
+  // construits chacun dans leur propre étape de cuisson.
   function rehydraterDecor(c, brut, optionsAtmosphere) {
-    const { decorPur: decor, maillageSol, saisonId, sourcesFeuilles, qualite, herbierPlat, grilleAnimaux } = brut;
+    const { decorPur: decor, maillageSol, saisonId, sourcesFeuilles, qualite, grilleAnimaux } = brut;
     for (const n of decor.nappes) {
       if (n.surfaceType) Object.defineProperty(n, 'surfaceType', { value: n.surfaceType, enumerable: false });
     }
+    if (B.bosquets && B.bosquets.rehydrater) for (const l of decor.lots || []) if (l && l.semisProgressif) B.bosquets.rehydrater(l);
     decor.sol = creerSolDepuisMaillage(maillageSol);
     decor.niveauEauA = undefined;
     decor.lagon = undefined;
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
     const saison = saisonId && B.saisons ? B.saisons.profil(saisonId, c.theme) : null;
-    const surfaceFn = surfaceHerbeDepuisPlat(herbierPlat);
     if (grilleAnimaux && maillageSol) grilleAnimaux.T = maillageSol;
     Object.defineProperties(decor, {
       maillageSol: { value: maillageSol },
@@ -289,11 +336,7 @@
       saison: { value: saison },
       sourcesFeuilles: { value: sourcesFeuilles || [] },
       qualite: { value: qualite, enumerable: false },
-      surfaceHerbe: { value: (x, z, sortie) => surfaceFn(x, z, sortie) },
     });
-    if (B.decor?.creerFluxDecor) {
-      Object.defineProperty(decor, 'fluxDecor', { value: B.decor.creerFluxDecor(decor.lots) });
-    }
     if (optionsAtmosphere) {
       decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
       decor.atmosphere = Object.assign({}, decor.atmosphere, {
@@ -310,27 +353,36 @@
       url: w ? w.url : null,
       callbacks,
       prochainId: 1,
-      enVol: null,       // { id, cle } envoyé au Worker
+      enVol: null,       // { id, cle, params } envoyé au Worker
+      boite: [],         // messages reçus de l'ouvrier, désérialisés un par image
+      recu: null,        // préparation en cours de réception { m, params, cle, lots, attendus, recus }
+      repli: null,       // préparation sans ouvrier, jouée étape par étape { id, cle, gen, cible, params }
       cuisson: null,     // tâche en cours de cuisson incrémentale sur le fil principal
       pret: null,        // paquet entièrement cuit { cle, c, sc, montage, station, cleStation }
       aLiberer: [],      // anciens mondes PhysX à détruire hors image de bascule
       detruit: false,
+      stats: { reception: 0, messages: 0, repli: 0, repliEtapes: {}, etapes: {} },   // pires durées (ms) sur le fil principal
     };
     if (flux.worker) {
-      flux.worker.onmessage = ev => {
-        if (flux.detruit) return;
-        const m = ev.data;
-        if (!m || !flux.enVol || m.id !== flux.enVol.id) return;
-        flux.enVol = null;
-        if (m.t === 'pret') demarrerCuisson(flux, m);
-        else console.warn('BITUME sans-fin worker:', m.message);
-      };
+      // Chrome ne désérialise un message qu'à la première lecture de ev.data : la boîte garde les événements
+      // intacts et avancerCadre en ouvre un par image.
+      flux.worker.onmessage = ev => { if (!flux.detruit) flux.boite.push(ev); };
+      // un ouvrier qui ne se charge pas (sécurité de la page, module en échec) laisse la place au repli
       flux.worker.onerror = ev => {
         ev?.preventDefault?.();
-        flux.enVol = null;
+        console.warn('BITUME sans-fin worker indisponible :', ev?.message || 'erreur de chargement');
+        passerEnRepli(flux);
       };
     }
     return flux;
+  }
+
+  function passerEnRepli(flux) {
+    if (flux.worker) { try { flux.worker.terminate(); } catch (_) {} flux.worker = null; }
+    if (flux.url) { try { URL.revokeObjectURL(flux.url); } catch (_) {} flux.url = null; }
+    flux.enVol = null;
+    flux.recu = null;
+    flux.boite.length = 0;
   }
 
   function abandonnerCuisson(flux) {
@@ -347,9 +399,12 @@
 
   function demander(flux, cible, params) {
     if (!flux || flux.detruit || !cible) return;
-    if (flux.pret?.cle === cible.cle || flux.cuisson?.cle === cible.cle || flux.enVol?.cle === cible.cle) return;
+    if (flux.pret?.cle === cible.cle || flux.cuisson?.cle === cible.cle || flux.enVol?.cle === cible.cle
+      || flux.recu?.cle === cible.cle || flux.repli?.cle === cible.cle) return;
     abandonnerCuisson(flux);
     abandonnerPret(flux);
+    flux.recu = null;
+    flux.repli = null;
     const id = flux.prochainId++;
     const req = {
       graine: cible.graine,
@@ -360,40 +415,59 @@
       decorOptions: params.decorOptions,
       avecAnimaux: params.avecAnimaux,
     };
-    flux.enVol = { id, cle: cible.cle, params };
     if (flux.worker) {
+      flux.enVol = { id, cle: cible.cle, params };
       flux.worker.postMessage({ t: 'preparer', id, cle: cible.cle, cleStation: cible.cleStation, req });
     } else {
-      // Repli asynchrone si Worker indisponible
-      setTimeout(() => {
-        if (flux.detruit || !flux.enVol || flux.enVol.id !== id) return;
-        flux.enVol = null;
-        try {
-          const res = executerPreparationCPU(B, req);
-          demarrerCuisson(flux, { id, cle: cible.cle, station: cible.station, cleStation: cible.cleStation, res, params });
-        } catch (e) { console.warn('BITUME sans-fin repli:', e); }
-      }, 0);
+      // Repli sans ouvrier : les étapes de la préparation se jouent une par image dans avancerCadre
+      flux.repli = { id, cle: cible.cle, gen: etapesPreparation(B, req, false), cible, params };
+    }
+  }
+
+  // Ouvre un message de la boîte (sa désérialisation a lieu ici) et range son contenu.
+  function recevoir(flux) {
+    const ev = flux.boite.shift(), t0 = maintenant();
+    const m = ev.data;
+    flux.stats.reception = Math.max(flux.stats.reception, +(maintenant() - t0).toFixed(2));
+    flux.stats.messages++;
+    if (!m) return;
+    if (m.t === 'pret') {
+      if (!flux.enVol || m.id !== flux.enVol.id) return;   // préparation remplacée entre-temps
+      flux.recu = { m, params: flux.enVol.params, cle: m.cle, lots: [], attendus: m.paquets || 0, recus: 0 };
+      flux.enVol = null;
+    } else if (m.t === 'lots') {
+      const r = flux.recu;
+      if (!r || r.m.id !== m.id) return;
+      for (const l of m.lots) r.lots.push(l);
+      r.recus++;
+    } else if (m.t === 'erreur') {
+      if (!(flux.enVol && flux.enVol.id === m.id) && !(flux.recu && flux.recu.m.id === m.id)) return;
+      // une préparation refusée ne se relance pas à chaque image : la séance passe au repli
+      console.warn('BITUME sans-fin worker:', m.message);
+      passerEnRepli(flux);
+      return;
+    }
+    const r = flux.recu;
+    if (r && r.recus >= r.attendus) {
+      flux.recu = null;
+      r.m.res.decorPur.lots = r.lots;
+      demarrerCuisson(flux, { cle: r.cle, station: r.m.station, cleStation: r.m.cleStation, res: r.m.res, params: r.params });
     }
   }
 
   function demarrerCuisson(flux, msg) {
     const params = msg.params || flux.callbacks.parametres();
-    const { c } = msg.res;
-    const decor = rehydraterDecor(c, msg.res, params);
-    const X = globalThis.FPhysX;
-    if (!X || !X.isReady()) return;
-    const world = X.createWorld({ fixedStep: 1 / 120, maxSubSteps: 8, ccdMaxPasses: 8, contacts: true, maxContactPoints: 512 });
-    const montage = B.solidesPhysX.creerMontage(world, !!(decor.mobilesPhysX && decor.mobilesPhysX.length));
     flux.cuisson = {
       cle: msg.cle,
-      c,
-      decor,
+      c: msg.res.c,
+      brut: msg.res,
+      decor: null,
       station: msg.station || null,
       cleStation: msg.cleStation ?? null,
       extraitPhysX: msg.res.extraitPhysX,
-      montage,
+      montage: null,
       curseurPhysX: { iNappe: 0, iStatique: 0, iMobile: 0, statsCopiees: false },
-      etape: 0,
+      etape: -3,
       detailPeripherique: null,
       visibilite: null,
       animaux: null,
@@ -405,7 +479,7 @@
 
   function avancerCadre(flux, S, budgetMs = 1.5) {
     if (!flux || flux.detruit) return;
-    const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const t0 = maintenant();
 
     // 1. Planification anticipée (950 m avant la limite du décor bâti ou 750 m avant sortie de station)
     if (S?.seance && B.routeSansFinSeance?.anticiper) {
@@ -416,11 +490,45 @@
       if (cible) demander(flux, cible, flux.callbacks.parametres(S));
     }
 
-    // 2. Cuisson incrémentale du monde suivant (PhysX + auxiliaires) sous budget strict par image
+    // 2. Une seule unité de travail par image : un message de l'ouvrier, une étape du repli ou une étape de cuisson
+    if (flux.boite.length) { recevoir(flux); return; }
+    if (flux.repli) {
+      const r = flux.repli, te = maintenant();
+      try {
+        const pas = r.gen.next();
+        if (!pas.done) flux.stats.repliEtapes[pas.value] = Math.max(flux.stats.repliEtapes[pas.value] || 0, +(maintenant() - te).toFixed(2));
+        if (pas.done) {
+          flux.repli = null;
+          demarrerCuisson(flux, { cle: r.cle, station: r.cible.station, cleStation: r.cible.cleStation, res: pas.value, params: r.params });
+        }
+      } catch (e) { console.warn('BITUME sans-fin repli:', e); flux.repli = null; }
+      flux.stats.repli = Math.max(flux.stats.repli, +(maintenant() - te).toFixed(2));
+      return;
+    }
+
+    // 3. Cuisson incrémentale du monde suivant (décor, PhysX, auxiliaires) sous budget par image
     const q = flux.cuisson;
     if (q) {
+      const te = maintenant(), etape = q.etape;
       try {
-        if (q.etape === 0) {
+        if (q.etape === -3) {
+          q.decor = rehydraterDecor(q.c, q.brut, q.params);
+          q.etape = -2;
+        } else if (q.etape === -2) {
+          const surfaceFn = surfaceHerbeDepuisPlat(q.brut.herbierPlat);
+          Object.defineProperty(q.decor, 'surfaceHerbe', { value: (x, z, sortie) => surfaceFn(x, z, sortie) });
+          q.etape = -1;
+        } else if (q.etape === -1) {
+          if (B.decor?.creerFluxDecor) Object.defineProperty(q.decor, 'fluxDecor', { value: B.decor.creerFluxDecor(q.decor.lots) });
+          q.etape = -0.5;
+        } else if (q.etape === -0.5) {
+          const X = globalThis.FPhysX;
+          if (!X || !X.isReady()) { abandonnerCuisson(flux); return; }
+          const world = X.createWorld({ fixedStep: 1 / 120, maxSubSteps: 8, ccdMaxPasses: 8, contacts: true, maxContactPoints: 512 });
+          q.montage = B.solidesPhysX.creerMontage(world, !!(q.decor.mobilesPhysX && q.decor.mobilesPhysX.length));
+          q.brut = null;
+          q.etape = 0;
+        } else if (q.etape === 0) {
           if (B.solidesPhysX.insererTranche(q.montage, q.extraitPhysX, q.curseurPhysX, budgetMs)) q.etape = 1;
         } else if (q.etape === 1) {
           q.detailPeripherique = B.detailPeripherique ? B.detailPeripherique.creer(q.decor.lots) : null;
@@ -454,11 +562,12 @@
         console.warn('BITUME sans-fin cuisson:', e);
         abandonnerCuisson(flux);
       }
+      flux.stats.etapes[etape] = Math.max(flux.stats.etapes[etape] || 0, +(maintenant() - te).toFixed(2));
       return;
     }
 
     // 3. Si aucune cuisson ne tourne et qu'il reste du budget, libérer un ancien monde PhysX retraité
-    if (flux.aLiberer.length && ((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0) < 0.6) {
+    if (flux.aLiberer.length && maintenant() - t0 < 0.6) {
       const w = flux.aLiberer.shift();
       try { w.dispose(); } catch (_) {}
     }
@@ -482,13 +591,16 @@
   }
 
   function enPreparation(flux) {
-    return !!(flux && !flux.detruit && (flux.enVol || flux.cuisson || flux.pret));
+    return !!(flux && !flux.detruit && (flux.enVol || flux.boite.length || flux.recu || flux.repli || flux.cuisson || flux.pret));
   }
 
   function detruire(flux) {
     if (!flux || flux.detruit) return;
     flux.detruit = true;
     flux.enVol = null;
+    flux.recu = null;
+    flux.repli = null;
+    flux.boite.length = 0;
     abandonnerCuisson(flux);
     abandonnerPret(flux);
     if (flux.worker) { try { flux.worker.terminate(); } catch (_) {} flux.worker = null; }

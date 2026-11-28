@@ -208,12 +208,20 @@
       else ajouterInstance(lot,site,leger,semis[k+5],semis[k+6],semis[k+7],p,semis[k+3],semis[k+4],axes,loinSeul);
     }
   }
+  // État d'un lot progressif, retrouvé par sa fonction de préparation : une copie
+  // superficielle du descripteur garde la même fonction, donc le même semis.
+  const ETATS_PROGRESSIFS=new WeakMap();
   function nouveauGroupe(progressif, leger, palettes) {
     const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:110,
       lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
     const groupe={lot,semis:progressif?[]:null,largeurs:progressif?null:[]};
     if (progressif) {
       lot.detailLointain=!leger;
+      attacherPreparation(lot,groupe,palettes,leger);
+    }
+    return groupe;
+  }
+  function attacherPreparation(lot, groupe, palettes, leger) {
       // Une copie superficielle de ce descripteur garde ces deux tableaux et
       // la même préparation. Chaque contexte reste propriétaire de son tampon GPU.
       lot.preparerLoin = () => {
@@ -244,8 +252,25 @@
         lireSemis(groupe.semis,palettes,leger,null,ombres);
         return ombres;
       };
-    }
-    return groupe;
+      ETATS_PROGRESSIFS.set(lot.preparerDetail,{groupe,palettes,leger});
+  }
+  // Ouvrier de la Route sans fin : une fonction ne traverse pas postMessage. Le lot part
+  // avec son semis (tampon transférable) et ses palettes ; rehydrater rattache, à l'arrivée,
+  // la même préparation différée, servie image par image par le flux du décor.
+  function serialiser(lot) {
+    const etat=lot && typeof lot.preparerDetail==='function' ? ETATS_PROGRESSIFS.get(lot.preparerDetail) : null;
+    if (!etat) return lot;
+    const {preparerLoin,preparerDetail,objetsOmbreLointaine,...donnees}=lot;
+    const semis=etat.groupe.semis;
+    donnees.semisProgressif={semis:semis ? Float64Array.from(semis) : null,palettes:etat.palettes,leger:etat.leger};
+    return donnees;
+  }
+  function rehydrater(lot) {
+    const sp=lot && lot.semisProgressif;
+    if (!sp) return lot;
+    delete lot.semisProgressif;
+    attacherPreparation(lot,{lot,semis:sp.semis,largeurs:null},sp.palettes,sp.leger);
+    return lot;
   }
 
   function construire(c, terrain, lots, interroger, ecologie, saison, qualite, options) {
@@ -367,5 +392,5 @@
     }
     return resultat;
   }
-  B.bosquets={construire};
+  B.bosquets={construire,serialiser,rehydrater};
 })(globalThis.BITUME=globalThis.BITUME||{});

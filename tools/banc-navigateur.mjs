@@ -283,6 +283,58 @@ try {
         break;
       }
     }
+  } else if (mode === 'sans-fin') {
+    // Route sans fin en temps réel, voiture du joueur à l'ordinateur jusqu'à --distance m (3 500 par défaut) :
+    // décors bâtis sur le fil principal après le départ, images de plus de 25 ms et leur abscisse absolue.
+    const distance = Number(args.distance ?? 3500), limite = Number(args.limite ?? 240);
+    rapport.sansFin = await evaluer(`(async () => {
+      const J = BITUME_JEU, B = BITUME, appels = { decor: 0, physx: 0, animaux: 0, fenetre: 0 }, longs = [];
+      let compter = false;
+      const envelopper = (o, k, cle) => { const f = o && o[k]; if (typeof f !== 'function') return;
+        o[k] = function (...a) { const t = performance.now(); try { return f.apply(this, a); }
+          finally { if (compter) { appels[cle]++; const ms = +(performance.now() - t).toFixed(1); if (ms > 2 || cle === 'decor') longs.push({ quoi: cle, ms, s: Math.round(J.session?.course?.joueur?.sansFin?.sMax ?? -1) }); } } }; };
+      envelopper(B.decor, 'construire', 'decor'); envelopper(B.solidesPhysX, 'installer', 'physx');
+      envelopper(B.animaux, 'creer', 'animaux'); envelopper(B.routeSansFinFenetre, 'avancer', 'fenetre');
+      for (const [o, k, cle] of [[B.routeSansFinFlux, 'avancerCadre', 'cadre'], [B.physique, 'installer', 'physique'], [B.physique, 'detacher', 'detacher'],
+        [J.rendu, 'setNappes', 'nappes'], [J.rendu, 'setLots', 'lots'], [J.rendu, 'setWorld', 'monde'], [B.ombres, 'carte', 'ombres'],
+        [B.traces, 'changerMonde', 'traces'], [B.solidesPhysX, 'insererTranche', 'tranche'], [B.detailPeripherique, 'creer', 'peripherique'],
+        [B.visibiliteRaycast, 'creer', 'raycast'], [B.decor, 'creerFluxDecor', 'fluxDecor'], [B.ecologie, 'creer', 'ecologie']]) { appels[cle] = 0; envelopper(o, k, cle); }
+      const loaf = [], sAbsLoaf = () => { const S = J.session; return S?.course?.joueur?.sansFin ? Math.round(S.course.joueur.sansFin.sMax) : null; };
+      const obs = PerformanceObserver.supportedEntryTypes.includes('long-animation-frame') ? new PerformanceObserver(l => {
+        for (const e of l.getEntries()) if (compter && e.duration > 20) loaf.push({ s: sAbsLoaf(), duree: Math.round(e.duration), bloquant: Math.round(e.blockingDuration || 0),
+          rendu: e.renderStart ? Math.round(e.startTime + e.duration - e.renderStart) : null,
+          scripts: (e.scripts || []).map(x => ({ quoi: x.invoker, fn: x.sourceFunctionName, ms: Math.round(x.duration), forcage: Math.round(x.forcedStyleAndLayoutDuration || 0) })).slice(0, 6) }); }) : null;
+      obs?.observe({ type: 'long-animation-frame' });
+      document.querySelector('input[name="qualite"][value="${qualite}"]')?.click();
+      await J.preparer({ type: 'sans-fin', conditions: { saison: 'ete', meteo: 'soleil', moment: 'jour' } });
+      J.pilotageAuto = true;
+      const S = J.session, co = S.course, flux = S.fluxSansFin;
+      const ouvrier = { worker: !!flux?.worker, source: flux?.worker ? (flux.url ? 'blob' : 'data') : 'aucun' };
+      while (co.phase !== 'course') await new Promise(r => setTimeout(r, 100));
+      compter = true;
+      const lentes = [], tous = [], debut = performance.now();
+      const sAbs = () => co.joueur.sansFin ? co.joueur.sansFin.sMax : co.joueur.etat.s;
+      await new Promise(fin => { let prec = 0;
+        const image = t => {
+          if (prec) { const dt = t - prec; tous.push(dt); if (dt > 25) lentes.push({ ms: +dt.toFixed(1), s: Math.round(sAbs()) }); }
+          prec = t;
+          if (sAbs() >= ${distance} || (t - debut) / 1000 > ${limite} || J.session !== S || co.joueur.sansFin?.elimine) fin(); else requestAnimationFrame(image);
+        };
+        requestAnimationFrame(image); });
+      compter = false;
+      const tri = tous.slice().sort((a, b) => a - b), q = p => +(tri[Math.min(tri.length - 1, Math.floor(p * tri.length))] || 0).toFixed(2);
+      const r = { ouvrier, distance: Math.round(sAbs()), duree: +((performance.now() - debut) / 1000).toFixed(1), images: tri.length,
+        p50: q(.5), p95: q(.95), p99: q(.99), maxFrameMs: +(tri[tri.length - 1] || 0).toFixed(1), lentes: lentes.slice(0, 40), appels,
+        filPrincipal: longs.filter(x => x.ms > 2 && x.quoi !== 'cadre' && x.quoi !== 'tranche').slice(0, 30),
+        tranches: { n: longs.filter(x => x.quoi === 'tranche').length, pire: Math.max(0, ...longs.filter(x => x.quoi === 'tranche').map(x => x.ms)),
+          cadrePire: Math.max(0, ...longs.filter(x => x.quoi === 'cadre').map(x => x.ms)) },
+        flux: flux ? JSON.parse(JSON.stringify(flux.stats || null)) : null, bascule: J.chronoBascule || null,
+        loaf: loaf.slice(0, 12), elimine: !!co.joueur.sansFin?.elimine,
+        checkpoints: (co.sansFin?.checkpoints || []).map(c => Math.round(c.s)).slice(0, 6), protocole: location.protocol };
+      J.pilotageAuto = false;
+      return r;
+    })()`);
+    rapport.limites.push('Route sans fin pilotée par l ordinateur ; les images de plus de 25 ms sont relevées avec leur abscisse absolue.');
   } else if (mode === 'cache-panorama') {
     rapport.cachePanorama = await controlerCachePanorama(evaluer, envoyer, attendre);
   } else if (mode === 'stand') {

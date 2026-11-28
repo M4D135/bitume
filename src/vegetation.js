@@ -392,9 +392,17 @@
 
   // Massifs par secteurs de 420 m, tapis par secteurs de 48 m pour limiter le surdessin hors champ.
   // Les verts ont leur générateur indépendant. Ajouter un massif ne déplace ni arbre, ni obstacle, ni stand.
+  // La plantation se joue en étapes : construire les enchaîne d'un trait, le décor les joue sous sa cadence quand il en a
+  // une (options.cadence = { budget } en millisecondes : repli sans ouvrier de la Route sans fin). Mêmes plantes au bit près.
   function construire(c, options = {}) {
+    const etapes = construireEtapes(c, options);
+    for (;;) { const r = etapes.next(); if (r.done) return r.value; }
+  }
+  function* construireEtapes(c, options = {}) {
     const { limites, interroger } = options;
     const qualite = normaliserQualite(options.qualite);
+    const cadence = options.cadence || null;
+    const horloge = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
     const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, brins: 0, brinsTapis: 0, tuiles: 0, objetsHerbe: 0, qualite };
     if (qualite === 'off' || !c || !limites || !interroger) return vide;
     const organique = options.organique === true;
@@ -509,7 +517,10 @@
       return a + (b - a) * u + (d - a) * v + (a - b - d + e) * u * v;
     }
     if (tapis) {
-      const surfaces = options.surfaces || (B.decor && B.decor.construire(c, { qualite: 'high', vegetation: false }).herbier);
+      // surfacesEtapes : le même herbier, ouvert par étapes au même point de la plantation (le décor la fournit)
+      const surfaces = (options.surfacesEtapes ? yield* options.surfacesEtapes() : options.surfaces)
+        || (B.decor && B.decor.construire(c, { qualite: 'high', vegetation: false }).herbier);
+      if (cadence) yield 'herbier';
       const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
       function planter(source, points, cle, profondeur = 0) {
         if (tuiles >= tapis.maximum) return;
@@ -591,7 +602,14 @@
         aireDisponible = surfaces.aire;
         // Le plafond est réparti sur toute la surface en cas de circuit exceptionnellement grand.
         const sources = surfaces.triangles, saut = Math.max(1, Math.ceil(sources.length / tapis.maximum));
-        for (let i = 0; i < sources.length; i += saut) planter(sources[i], sources[i].points, i + 1);
+        if (cadence) {
+          // même semis, rendu la main dès que le budget de l'image est atteint (horloge lue toutes les 32 sources)
+          for (let i = 0, compte = 0, t0 = horloge(); i < sources.length; i += saut) {
+            planter(sources[i], sources[i].points, i + 1);
+            if ((++compte & 31) === 0 && horloge() - t0 > cadence.budget) { yield 'prairie'; t0 = horloge(); }
+          }
+          yield 'prairie';
+        } else for (let i = 0; i < sources.length; i += saut) planter(sources[i], sources[i].points, i + 1);
       }
     }
 
@@ -633,6 +651,7 @@
       }
     }
 
+    if (cadence) yield 'fougeres';
     // Fleurs : prairie clairsemée en bordure extérieure, palette par biome.
     if (!sousNeige && palier.fleurs && biome.familles.includes('fleurs') && biome.fleurs && biome.fleurs.length) {
       const rl = hasard((c.graine ^ 0x7a19c3d1) >>> 0);
@@ -657,6 +676,7 @@
       }
     }
 
+    if (cadence) yield 'fleurs';
     const lots = [];
     for (const [tapis, collection] of [[false, groupes], [true, groupesTapis]]) for (const l of collection.values()) {
       const centre = [0, 0, 0];
@@ -675,7 +695,7 @@
       aireNue: Math.max(0, aireDisponible - aireAccotements - aireTerrain), aireRiche, brinsRiches, tuiles, objetsHerbe: herbes, qualite };
   }
 
-  B.vegetation = { FORMES, FORMES_AJOUT, FORMES_PRAIRIE, BRINS_FORMES, BRINS_PRAIRIE, BUDGET, PALIERS, TAPIS, LOT_TAPIS, BRINS_TUILE, BIOMES, JEU_FORMES, forme, installer, construire };
+  B.vegetation = { FORMES, FORMES_AJOUT, FORMES_PRAIRIE, BRINS_FORMES, BRINS_PRAIRIE, BUDGET, PALIERS, TAPIS, LOT_TAPIS, BRINS_TUILE, BIOMES, JEU_FORMES, forme, installer, construire, construireEtapes };
   // La page enregistre d'emblée toutes les formes : un changement de palier ne doit pas demander
   // d'ajouter une forme après FRender.create. Le registre du palier bas reste les quatre formes historiques.
   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender, 'high');
