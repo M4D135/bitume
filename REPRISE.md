@@ -3,7 +3,11 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**28 novembre (soir) — AgX par défaut : 0.2.353 poussée sur `origin/main` (commit « 0.2.353 : AgX par défaut… »).**
+**28 novembre (soir) — AgX par défaut : 0.2.353 (`a7dca52`) en ligne, déployée vers 17 h 09 (David : « fais au mieux »).**
+- **En production (`https://bitume.estrasse.fr/`)** : **0.2.353** (`a7dca52`, sha256 `9848b7b731265017`, salon actif, non relancé).
+  Sur amiga restent 0.2.352 (`d707210`, ferro par défaut, AgX par `?rendu=agx`) et 0.2.350 (`3433896`) ; `d82f5e1`
+  (0.2.345) a été retirée par `deposer.sh`. Retour arrière vers 0.2.352 :
+  `ssh amiga 'ln -sfn releases/d70721074086092e6eb0e54fc56109dddfc0ecea ~/apps/bitume/current.new && mv -T ~/apps/bitume/current.new ~/apps/bitume/current'`.
 - **Décision** : après l'essai de 0.2.352, David : « fais au mieux, moi je vois pas difference ». AgX devient le défaut,
   comme dans FERRO :
   - courbe de référence du moteur depuis 0.3.39 ;
