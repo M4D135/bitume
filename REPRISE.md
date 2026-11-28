@@ -3,8 +3,9 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**28 novembre (fin de matinée) — relève du 28/11 faite, sauf le titre. Poussé sur `origin/main`, non déployé : 0.2.350.**
-- **En production** : toujours **0.2.345** (`d82f5e1`). Déployer (`./deposer.sh`) seulement sur le GO de David.
+**28 novembre (midi) — relève du 28/11 faite, sauf le titre. En ligne : 0.2.350 (`3433896`), déployée vers 11 h 50 sur le GO de David.**
+- **En production (`https://bitume.estrasse.fr/`)** : **0.2.350** (`3433896`, sha256 `36a383165a896ad8`, salon actif). La 0.2.345
+  (`d82f5e1`) reste sur amiga pour un retour arrière (commande en tête de `deposer.sh`). Déployer seulement sur un GO de David.
 - **Chantier 2, Route sans fin sans gel (0.2.347)** : l'ouvrier prépare le décor et PhysX hors du fil principal, en HTTP
   comme en `file://`, et le repli sans ouvrier découpe le travail en tranches. Il reste une image de 33 ms à chaque
   bascule de fenêtre : passer sous 25 ms demande un double tampon des lots et des nappes dans FERRO (module canonique).
@@ -23,8 +24,7 @@
 - **Modèle 205 GTI** : posé par ChatGPT dans `modeles/peugeot-205-gti` (644824b, galbes et proportions affinés), pas encore
   intégré au jeu.
 - **En attente de David** : le titre (TRAJECTOIRE, CONTRE-BRAQUAGE, TALON-POINTE, POINT DE CORDE, LACETS, GOMME,
-  RUPTEUR, TOUR LANCÉ ; voir `AGENTS.md`), la confirmation de la « Renalt 5 GT 3 » (R5 GT Turbo ?), et le GO de
-  déploiement.
+  RUPTEUR, TOUR LANCÉ ; voir `AGENTS.md`) et la confirmation de la « Renalt 5 GT 3 » (R5 GT Turbo ?).
 
 **28 novembre (07:52), exécuté depuis, sauf le titre — PROMPT DE RELÈVE PRIORITAIRE : [`docs/reprise/PROMPT-RELEVE-2026-11-28.md`](docs/reprise/PROMPT-RELEVE-2026-11-28.md).**
 - **En production (`https://bitume.estrasse.fr/`)** : **0.2.345** (`d82f5e1`, `FERRO 0.3.36` `20ef396`, sha256 `7a0e897ed944ea15`, salon actif) — gants FIA photoréalistes procéduraux, biomécanique mains/poignets (`prisePommeau`, `0,00 o/appel`), Nomex mat sous la pluie, et correctifs complets des caméras démo/vitrine.
