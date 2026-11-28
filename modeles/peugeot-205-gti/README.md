@@ -6,6 +6,14 @@ Reconstitution visuelle procédurale originale d’une **Peugeot 205 GTI 1.9 rou
 
 ![Vue avant du GLB exporté](apercus/avant.png)
 
+## Reprise des volumes
+
+Cette révision reprend les volumes d’après les vues de profil, de trois-quarts et de détail d’une GTI 1.9 de 1989. La porte avant a été raccourcie en avançant le montant B ; la fin du pavillon a également été avancée. Le toit possède une double courbure et des bords roulés. La ceinture de vitrage légèrement abaissée et les coins arrondis de custode rétablissent la silhouette de la trois-portes.
+
+Les flancs ont un épaulement continu et un léger bombé, le capot une retombée arrondie et les extensions d’ailes une face plate avec des retours moulés. Les pare-chocs et les jupes enveloppent les coins de caisse. Les phares trapézoïdaux et les longues portées sont logés dans ces surfaces ; les rétroviseurs ont été reconstruits par sections galbées. Les vitrages traversent de vraies ouvertures dans les tôles et leurs joints suivent les mêmes surfaces.
+
+Il s’agit de modifications de la géométrie et des proportions, conservées dans les trois formats livrés. Les positions de silhouette ajustées sur photographies sont des estimations visuelles, pas des cotes constructeur.
+
 ## Fichiers
 
 | Fichier | Usage |
@@ -14,6 +22,10 @@ Reconstitution visuelle procédurale originale d’une **Peugeot 205 GTI 1.9 rou
 | `peugeot-205-gti.glb` | Export glTF 2.0 binaire autonome, avec matériaux et hiérarchie. |
 | `peugeot-205-gti.ferro.json.gz` | Échange géométrique destiné à une future adaptation FERRO ; triangles, matériaux et transformations. |
 | `generer.py` | Générateur principal Blender et exports ; peut aussi produire les aperçus. |
+| `carrosserie.py` | Flancs, ailes, élargisseurs, capot, moulures et ouvrants inférieurs. |
+| `pavillon.py` | Pavillon à double courbure, montants, vitrages, hayon et soubassement. |
+| `facades.py` | Boucliers enveloppants, jupes, calandre et optiques encastrées. |
+| `retroviseurs.py` | Coques galbées, supports et glaces des rétroviseurs. |
 | `interieur.py` | Construction de l’habitacle, des sièges, instruments et du volant. |
 | `modele.json` | Repères, dimensions nominales, pivots et statistiques d’export. |
 | `valide_glb.py` | Contrôle structurel et géométrique du GLB, en Python standard. |
@@ -108,7 +120,7 @@ Pour reconstruire aussi les aperçus, depuis ce même dossier :
 blender -b --python generer.py -- --output . --render --samples 112 --resolution 1600
 ```
 
-`generer.py` et `interieur.py` doivent rester dans le même dossier. Le script recrée la scène du processus Blender lancé et remplace les exports dans le dossier de sortie ; utiliser un autre `--output` pour conserver des retouches manuelles. Aucun téléchargement ni module Python externe n’est nécessaire.
+Les six scripts de construction (`generer.py`, `carrosserie.py`, `pavillon.py`, `facades.py`, `retroviseurs.py` et `interieur.py`) doivent rester dans le même dossier. Le script recrée la scène du processus Blender lancé et remplace les exports dans le dossier de sortie ; utiliser un autre `--output` pour conserver des retouches manuelles. Aucun téléchargement ni module Python externe n’est nécessaire.
 
 ## Vérifier
 
@@ -127,16 +139,18 @@ Les deux rapports sont valides, sans erreur ni avertissement.
 
 | Mesure | Résultat |
 |---|---:|
-| Triangles instanciés, GLB et FERRO | 146 658 |
-| Maillages distincts / matériaux / images dans le GLB | 43 / 38 / 0 |
-| Groupes / formes dans l’échange FERRO | 11 / 67 |
+| Triangles instanciés, GLB et FERRO | 203 547 |
+| Maillages distincts / matériaux / images dans le GLB | 44 / 39 / 0 |
+| Groupes / formes dans l’échange FERRO | 11 / 68 |
 | Triangles dégénérés détectés | 0 |
-| Boîte englobante totale X × Y × Z | 3,7050 × 1,6030 × 1,9077 m |
+| Boîte englobante totale X × Y × Z | 3,7040 × 1,6027 × 1,8455 m |
 | Écart maximal entre les AABB de chaque pièce GLB/FERRO | < 0,000001 m |
 
 Le GLB partage certains maillages entre les quatre roues ; le nombre de formes FERRO et le nombre de maillages distincts GLB n’ont donc pas à être identiques. Les rapports constituent les mesures de référence après toute régénération. Ces contrôles portent sur l’asset, sans mesure de performances ni validation de conduite dans le jeu. Aucun jeu de LOD ou volume de collision séparé n’est fourni.
 
 ## Références de construction
+
+- [News d’Anciennes — « Au volant d’une Peugeot 205 GTI 1.9, évidence et polyvalence »](https://newsdanciennes.com/au-volant-dune-peugeot-205-gti-1-9-evidence-et-polyvalence/) : reportage photographique original sur une GTI 1.9 de 1989 ; vues de profil, faces, détails et habitacle utilisées pour la reprise des volumes. Les photographies servent de références d’observation et ne sont pas incluses dans le dépôt.
 
 - [Peugeot / Stellantis — « 10 reasons why the Peugeot 205 GTI is the greatest hot hatch ever »](https://www.media.stellantis.com/uk-en/peugeot/press/10-reasons-why-the-peugeot-205-gti-is-the-greatest-hot-hatch-ever) : empattement de 2 420 mm, jantes Speedline de 15 pouces propres à la 1.9 et éléments d’identité visuelle GTI.
 - [FIA — fiche d’homologation A-5301](https://historicdb.fia.com/sites/default/files/car_attachment/1601059801/homologation_form_number_5301_group_a.pdf), page 2 : référence de caisse 205 GTI 1.6, longueur 3 705 mm, largeur 1 589 mm, empattement 2 420 mm, porte-à-faux avant 680 mm et arrière 605 mm. Cette fiche de caisse commune a servi de référence dimensionnelle ; elle ne certifie pas chaque détail de notre interprétation 1.9.

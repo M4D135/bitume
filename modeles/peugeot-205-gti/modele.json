@@ -48,8 +48,8 @@
   "runtime_integration": false,
   "external_textures": false,
   "ferro": {
-    "shapes": 67,
-    "triangles": 146658,
-    "uncompressed_bytes": 28910222
+    "shapes": 68,
+    "triangles": 203547,
+    "uncompressed_bytes": 43657687
   }
 }
