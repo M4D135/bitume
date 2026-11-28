@@ -112,7 +112,9 @@
     }
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p55', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  // p56 (28/11) : relief adouci (Larche sans marches ni contre-dévers, crêtes ≤ 0,4 g) — David, 18/11 : « records et
+  // fantômes repartent à zéro avec le nouveau relief ».
+  const PHYSIQUE = 'p56', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const recordsLus = lireStock(CLE_RECORDS, {});
   // JSON.stringify ignore les clés nommées d'un tableau. Reprendre ses temps sous leurs
   // anciens identifiants avant que la première amélioration sur un raccord soit sauvegardée.
@@ -164,6 +166,9 @@
       else if (k.id === 'marseille' && B.marseille) circuits[i] = B.marseille.creer(k.graine);
       else circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
       circuits[i].nom = k.nom;
+      // Pistes fluides (David, 28/11 ; règle du 18/11 : « crêtes qui allègent de 0,4 g au plus ») : à la consigne de
+      // l'IA, aucune crête n'allège plus de 0,4 g ni aucun creux ne comprime plus de 0,8 g, hors sauts voulus.
+      circuits[i].reliefAdouci = B.circuit.adoucirRelief(circuits[i], { garder: circuits[i].sauts || [] });
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
       if (B.bords && !circuits[i].ouvert) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }

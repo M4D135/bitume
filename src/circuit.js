@@ -393,6 +393,65 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return c;
   }
 
+  // Crêtes et creux adoucis (David, 18/11 : « crêtes qui allègent de 0,4 g au plus » ; 28/11 : « rend les plus
+  // fluides à emprunter avec une f1 »). À la consigne de vitesse de l'IA, la trajectoire verticale v²·κv ne doit ni
+  // alléger la voiture de plus de gCrete·g ni la comprimer de plus de gCreux·g. Là où elle le ferait, la hauteur de
+  // l'échantillon est ramenée juste à la limite ; l'excès passe aux voisins et les passes suivantes l'étalent (la somme
+  // des κv, donc la différence de pente, se conserve) jusqu'à ce que tout le parcours tienne la règle. Les zones
+  // `garder` (sauts voulus) et la ligne des stands ne bougent pas ; un circuit fermé reste fermé (indices modulo n),
+  // une route ouverte garde ses deux bouts. La consigne IA ne lit que le plan : elle reste juste.
+  function adoucirRelief(c, { gCrete = .4, gCreux = .8, garder = [], plafond = 400 * c.n } = {}) {
+    const n = c.n, y = c.y, v = c.vitesse, ferme = !c.ouvert;
+    if (!y || !v || !(n >= 5)) return null;
+    const ds = c.longueur / (ferme ? n : n - 1), ds2 = ds * ds, fige = new Uint8Array(n);
+    const figer = (debut, fin) => {
+      if (!(fin >= debut)) return;
+      for (let s = debut; s <= fin + 1e-9; s += ds) {
+        const i = Math.round(s / ds);
+        if (ferme) fige[((i % n) + n) % n] = 1; else if (i >= 0 && i < n) fige[i] = 1;
+      }
+    };
+    for (const z of garder) figer(z.debut, z.fin);
+    if (c.stands && Number.isFinite(c.stands.debut)) figer(c.stands.debut - 20, c.stands.fin + 20);
+    if (!ferme) { fige[0] = 1; fige[n - 1] = 1; }
+    const crete = new Float64Array(n), creux = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const v2 = Math.max(15, v[i]) ** 2;
+      crete[i] = -gCrete * 9.81 / v2; creux[i] = gCreux * 9.81 / v2;
+    }
+    // File de travail : chaque échantillon corrigé renvoie ses deux voisins à l'examen ; l'ordre (indices entiers, file
+    // circulaire) et les opérations IEEE sont les mêmes partout : même relief sur toutes les machines (jeu en ligne).
+    const modifie = new Uint8Array(n), file = new Int32Array(n), dansFile = new Uint8Array(n);
+    let tete = 0, queue = 0, taille = 0, touches = 0, operations = 0, pire = 0;
+    const pousser = i => {
+      if (fige[i] || dansFile[i]) return;
+      dansFile[i] = 1; file[queue] = i; queue = queue + 1 === n ? 0 : queue + 1; taille++;
+    };
+    for (let i = 0; i < n; i++) pousser(i);
+    while (taille > 0 && operations < plafond) {
+      const i = file[tete]; tete = tete + 1 === n ? 0 : tete + 1; taille--; dansFile[i] = 0; operations++;
+      const a = ferme ? (i === 0 ? n - 1 : i - 1) : i - 1, b = ferme ? (i === n - 1 ? 0 : i + 1) : i + 1;
+      const kv = (y[a] - 2 * y[i] + y[b]) / ds2;
+      const exces = kv < crete[i] ? kv - crete[i] : kv > creux[i] ? kv - creux[i] : 0;
+      if (exces === 0) continue;
+      y[i] += exces * ds2 / 2;
+      modifie[i] = 1; touches++;
+      if (Math.abs(exces) > 1e-7) { pousser(a); pousser(b); }
+    }
+    for (let i = 0; i < n; i++) {
+      if (fige[i]) continue;
+      const a = ferme ? (i === 0 ? n - 1 : i - 1) : i - 1, b = ferme ? (i === n - 1 ? 0 : i + 1) : i + 1;
+      const kv = (y[a] - 2 * y[i] + y[b]) / ds2;
+      pire = Math.max(pire, crete[i] - kv, kv - creux[i]);
+    }
+    // pente recalculée là seulement où la hauteur a bougé (ailleurs, celle du constructeur reste au bit près)
+    if (c.pente) for (let i = 0; i < n; i++) {
+      const a = ferme ? (i - 1 + n) % n : Math.max(0, i - 1), b = ferme ? (i + 1) % n : Math.min(n - 1, i + 1);
+      if (modifie[a] || modifie[i] || modifie[b]) c.pente[i] = (y[b] - y[a]) / ((ferme ? 2 : b - a) * ds);
+    }
+    return { touches, operations, residu: Math.max(0, pire) };
+  }
+
   // Limites latérales : glissières à 20 m, rapprochées à l'intérieur des virages serrés (repère valable : 1 − κd > 0,3).
   function limites(courbure, n, largeur) {
     const G = new Float32Array(n), D = new Float32Array(n), F = Math.round(36 / PAS);
@@ -867,5 +926,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, preparerParcours, preparerStands, abscisseGrille, axeStands, bandeStands, bordStands, surVoieStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, adoucirRelief, preparerStands, abscisseGrille, axeStands, bandeStands, bordStands, surVoieStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

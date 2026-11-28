@@ -60,9 +60,9 @@ function resampleUniform(x10, z10, nRaw, pas) {
   }
   const longueurTotale = sRaw[nRaw - 1];
   const n = Math.round(longueurTotale / pas) + 1;
-  const outX = new Float32Array(n);
-  const outZ = new Float32Array(n);
-  const outS = new Float32Array(n);
+  const outX = new Float64Array(n);
+  const outZ = new Float64Array(n);
+  const outS = new Float64Array(n);
 
   let idx = 0;
   for (let k = 0; k < n; k++) {
@@ -94,6 +94,39 @@ function interpLinear(src, nSrc, nDst) {
     const i0 = Math.min(i, nSrc - 1);
     const i1 = Math.min(i + 1, nSrc - 1);
     out[k] = lerp(src[i0], src[i1], f);
+  }
+  return out;
+}
+
+// Altitude placée à l'abscisse (David, 28/11 : « routes bosselées, irrégulières ») : les points bruts sont espacés
+// de 4 à 12 m ; répartir leurs altitudes au rang du point (interpLinear) les faisait glisser le long de la route et
+// créait des cassures de pente de 15 %. Interpolation linéaire de (sRaw, yRaw) à s = k·pas, bornée aux deux bouts.
+function altitudeParAbscisse(yRaw, sRaw, nRaw, n, pas) {
+  const out = new Float64Array(n);
+  let idx = 0;
+  for (let k = 0; k < n; k++) {
+    const s = k * pas;
+    if (s <= sRaw[0]) { out[k] = yRaw[0]; continue; }
+    if (s >= sRaw[nRaw - 1]) { out[k] = yRaw[nRaw - 1]; continue; }
+    while (idx < nRaw - 2 && sRaw[idx + 1] < s) idx++;
+    const t = (s - sRaw[idx]) / (sRaw[idx + 1] - sRaw[idx] + 1e-12);
+    out[k] = yRaw[idx] + t * (yRaw[idx + 1] - yRaw[idx]);
+  }
+  return out;
+}
+
+// Lissage gaussien centré (sans déphasage) : les altitudes brutes sont au décimètre, des marches de 10 cm plus hautes
+// que la course de suspension d'une F1 (8 cm). Demi-fenêtre 3σ ; route ouverte : la première et la dernière valeur
+// se répètent au-delà des bouts.
+function lisserGauss(v, sigma, pas) {
+  const n = v.length, out = new Float64Array(n), R = Math.ceil(3 * sigma / pas), poids = new Float64Array(2 * R + 1);
+  let somme = 0;
+  for (let j = -R; j <= R; j++) { const u = j * pas / sigma; poids[j + R] = Math.exp(-0.5 * u * u); somme += poids[j + R]; }
+  for (let j = 0; j <= 2 * R; j++) poids[j] /= somme;
+  for (let i = 0; i < n; i++) {
+    let acc = 0;
+    for (let j = -R; j <= R; j++) acc += v[Math.max(0, Math.min(n - 1, i + j))] * poids[j + R];
+    out[i] = acc;
   }
   return out;
 }
@@ -143,9 +176,9 @@ function separerEpingles(outX, outZ, y, n, pas) {
     if (worst <= MAX_DTH * 1.02) break;
   }
 
-  const rX = new Float32Array(n);
-  const rZ = new Float32Array(n);
-  const rS = new Float32Array(n);
+  const rX = new Float64Array(n);
+  const rZ = new Float64Array(n);
+  const rS = new Float64Array(n);
   let cx = outX[0], cz = outZ[0];
   rX[0] = cx; rZ[0] = cz; rS[0] = 0;
   for (let i = 1; i < n; i++) {
@@ -167,7 +200,7 @@ function creer(graine, options) {
   const brut = resampleUniform(D.x10, D.z10, nRaw, PAS);
   const yRaw = new Float64Array(nRaw);
   for (let i = 0; i < nRaw; i++) yRaw[i] = D.y10[i] / 10;
-  const yBrut = interpLinear(yRaw, nRaw, brut.n);
+  const yBrut = lisserGauss(altitudeParAbscisse(yRaw, brut.sRaw, nRaw, brut.n, PAS), 12, PAS);   // σ 12 m, soit ±36 m
   // Séparer les branches d'épingles trop serrées : garantit 0 glissière/accotement sur la chaussée
   const { outX, outZ, outS, y, n, longueur } = separerEpingles(brut.outX, brut.outZ, yBrut, brut.n, PAS);
   const ratioL = longueur / Math.max(1, brut.longueurTotale);
@@ -189,10 +222,10 @@ function creer(graine, options) {
   const d40 = interpLinear(d40Raw, nRaw, n);
 
   // Cap, courbure, pente
-  const cap = new Float32Array(n);
-  const courbure = new Float32Array(n);
-  const pente = new Float32Array(n);
-  const devers = new Float32Array(n);
+  const cap = new Float64Array(n);
+  const courbure = new Float64Array(n);
+  const pente = new Float64Array(n);
+  const devers = new Float64Array(n);
 
   for (let i = 0; i < n; i++) {
     const a = Math.max(0, i - 1);
@@ -203,7 +236,7 @@ function creer(graine, options) {
   }
 
   // Courbure = dcap/ds, lissée 3 points non-circulaire, plafonnée
-  const courbureRaw = new Float32Array(n);
+  const courbureRaw = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     const a = Math.max(0, i - 1);
     const b = Math.min(n - 1, i + 1);
@@ -221,7 +254,7 @@ function creer(graine, options) {
   }
 
   // Pente
-  const penteRaw = new Float32Array(n);
+  const penteRaw = new Float64Array(n);
   // Lissage doux anti-overshoot sur y : garantit une pente jouable (<= 16 %) sans casser le dénivelé global
   for (let pass = 0; pass < 400; pass++) {
     let mod = false;
@@ -245,18 +278,27 @@ function creer(graine, options) {
     pente[i] = (penteRaw[a] + penteRaw[i] + penteRaw[b]) / 3;
   }
 
-  // Devers
+  // Dévers porteur (David, 28/11 : « rend les plus fluides à emprunter avec une f1 ») : la convention est celle de
+  // circuit.js, courbure × 1,6 bornée à ±0,045 rad (hauteur y − d·tan(dévers) : l'intérieur du virage plus bas).
+  // L'ancien −1,4 × courbure mettait tous les virages en contre-dévers. Nul au départ, à l'arrivée et sur les ponts,
+  // il y revient en douceur sur 40 m (smoothstep), puis une moyenne centrée de ±24 m adoucit le roulis.
   const arriveeS = Math.min(longueur - 200, D.longueurCourseM);
+  const poidsDevers = new Float64Array(n), deversBrut = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     const s = outS[i];
-    let dv = -courbure[i] * 1.4;
-    dv = clamp(dv, -0.045, 0.045);
-    if (s < 80 || s > arriveeS - 40) dv = 0;
-    // Sur les ponts → 0
+    let e = Math.min(s - 80, arriveeS - 40 - s);             // distance aux extrémités sans dévers (négative dedans)
     for (const ov of D.ouvrages) {
-      if (ov[0] === 'pont' && s >= ov[1] && s <= ov[2]) { dv = 0; break; }
+      if (ov[0] !== 'pont') continue;
+      e = Math.min(e, s >= ov[1] && s <= ov[2] ? -1 : Math.min(Math.abs(s - ov[1]), Math.abs(s - ov[2])));
     }
-    devers[i] = dv;
+    const t = e <= 0 ? 0 : Math.min(1, e / 40);
+    poidsDevers[i] = t * t * (3 - 2 * t);
+    deversBrut[i] = poidsDevers[i] * clamp(courbure[i] * 1.6, -0.045, 0.045);
+  }
+  for (let i = 0; i < n; i++) {
+    let somme = 0;
+    for (let j = -6; j <= 6; j++) somme += deversBrut[Math.max(0, Math.min(n - 1, i + j))];
+    devers[i] = poidsDevers[i] * somme / 13;
   }
 
   // Vibreur

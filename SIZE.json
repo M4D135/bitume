@@ -1,8 +1,8 @@
 {
-  "version": "0.2.348",
-  "raw": 17811230,
-  "gzip": 4836617,
-  "sha256": "3c8076a84867e243f2fd4cf827acf3caf63230d9202945aa0cdac4dee44ddd18",
+  "version": "0.2.349",
+  "raw": 17818253,
+  "gzip": 4838911,
+  "sha256": "28f9cc1f2434bec55f30c17cb73edb955bf7c6437eb09d3b668fe2eb3c371e89",
   "sources": {
     "ferro/surface.js": 3499,
     "ferro/render-shared.js": 81526,
@@ -12,7 +12,7 @@
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 29091,
-    "circuit.js": 49185,
+    "circuit.js": 52940,
     "couverts.js": 13878,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
@@ -23,7 +23,7 @@
     "route-des-cimes.js": 25009,
     "route-des-cimes-decor.js": 10550,
     "larche-vinadio-data.js": 331200,
-    "larche-vinadio.js": 13285,
+    "larche-vinadio.js": 15955,
     "larche-relief.js": 13215,
     "coniferes-alpins.js": 7139,
     "pietraporzio-data.js": 6527,
@@ -67,7 +67,7 @@
     "equipe-stands.js": 33600,
     "camera-transition.js": 4533,
     "championnat.js": 7193,
-    "records.js": 7403,
+    "records.js": 7469,
     "cache.js": 9782,
     "cache-relief.js": 2458,
     "panorama-cache.js": 4486,
@@ -114,7 +114,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13390,
     "visites.js": 7590,
-    "jeu.js": 504650,
+    "jeu.js": 505182,
     "index.html": 85248,
     "style.css": 115972
   }
