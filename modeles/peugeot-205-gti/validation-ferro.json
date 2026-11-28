@@ -1,0 +1,169 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "ferro_triangles": 146658,
+  "glb_triangles": 146658,
+  "groups": 11,
+  "shapes": 67,
+  "ferro_aabb_world_m": {
+    "min": [
+      -1.8150000575,
+      -0.0014000235000000139,
+      -0.9538428785
+    ],
+    "max": [
+      1.889999867,
+      1.6015802625000002,
+      0.9538428785
+    ],
+    "dimensions": [
+      3.7049999245,
+      1.6029802860000002,
+      1.907685757
+    ]
+  },
+  "glb_aabb_world_m": {
+    "min": [
+      -1.815000057220459,
+      -0.0014000236988067627,
+      -0.9538428783416748
+    ],
+    "max": [
+      1.8899998664855957,
+      1.601580262184143,
+      0.9538428783416748
+    ],
+    "dimensions": [
+      3.7049999237060547,
+      1.6029802858829498,
+      1.9076857566833496
+    ]
+  },
+  "max_aabb_difference_m": 5.144042969362772e-10,
+  "max_shape_aabb_difference_m": 7.974546756273071e-07,
+  "max_group_matrix_difference": 9.219415275651954e-08,
+  "max_matrix_pivot_difference_m": 3.9102429610492455e-08,
+  "max_normal_length_error": 1.6297217175775813e-07,
+  "max_normalized_coordinate": 0.5,
+  "minimum_triangle_area_m2": 2.0224385552871557e-08,
+  "degenerate_triangles": 0,
+  "triangles_by_group": {
+    "body": 63566,
+    "glazing": 5216,
+    "interior": 9272,
+    "steering_wheel": 1068,
+    "wheel_FL": 16884,
+    "wheel_FR": 16884,
+    "wheel_RL": 16884,
+    "wheel_RR": 16884
+  },
+  "shape_aabb_differences_m": {
+    "body__Amber_indicator_0": 2.6278690334891053e-10,
+    "body__Anthracite_mouldings_0": 6.749573122633024e-10,
+    "body__Badge_silver_0": 4.4336357030161366e-08,
+    "body__Bright_metal_0": 5.951589976405103e-08,
+    "body__GTI_red_inlay_0": 7.974546756273071e-07,
+    "body__Headlamp_fluting_0": 4.2114256526559757e-10,
+    "body__Headlamp_glass_0": 6.037597088948132e-10,
+    "body__Lamp_reflector_0": 5.633544741812102e-10,
+    "body__Mirror_silver_0": 2.955321543041123e-10,
+    "body__Moulding_ridges_0": 5.287474902360145e-10,
+    "body__Plate_characters_0": 1.7070255639572984e-07,
+    "body__Recesses_0": 3.2904057256644137e-10,
+    "body__Red_lens_prisms_0": 4.960022392808128e-10,
+    "body__Red_tail_lens_0": 3.019209293686487e-08,
+    "body__Rouge_Vallelunga_0": 2.498168338860296e-10,
+    "body__Steel_0": 3.104247969787366e-10,
+    "body__Tire_and_seal_rubber_0": 5.220337495615013e-10,
+    "body__Underseal_0": 5.762786914331741e-10,
+    "body__Yellow_driving_lights_0": 5.229492394676072e-10,
+    "body__Yellow_lens_fluting_0": 3.5958869215590994e-10,
+    "front_numberplate_0": 4.0252690070019526e-10,
+    "rear_numberplate_0": 3.336793064079302e-10,
+    "glazing__Heated_window_filament_0": 5.02868635621212e-10,
+    "glazing__Slight_green_glazing_0": 5.88653459310251e-10,
+    "cabin_anthracite_plastic_0": 5.971487437861356e-08,
+    "cabin_black_bolsters_0": 2.9790847788646602e-08,
+    "cabin_brushed_metal_0": 4.6325687730330856e-10,
+    "cabin_carpet_0": 3.0479629486990234e-08,
+    "cabin_grey_cloth_0": 2.9784744226546422e-08,
+    "cabin_instrument_black_0": 2.9765579223628436e-08,
+    "cabin_instrument_needles_0": 3.4960934147676426e-10,
+    "cabin_instrument_print_0": 4.1693115626628696e-10,
+    "cabin_red_weave_0": 2.996846004688081e-08,
+    "cabin_steering_anthracite_plastic_0": 1.2506922886235117e-08,
+    "cabin_steering_black_bolsters_0": 3.088486669189372e-08,
+    "FL_brake_disc_0": 8.134052320585283e-10,
+    "FL_tire_0": 3.7120817530933437e-10,
+    "FL_tire_size_0": 2.2765887619513592e-08,
+    "wheel_FL__Recesses_0": 6.903934535174017e-09,
+    "wheel_FL__Rim_edge_metal_0": 2.541670762745696e-09,
+    "wheel_FL__Speedline_satin_alloy_0": 4.1413883433705223e-10,
+    "wheel_FL__Steel_0": 2.0982714454831353e-09,
+    "wheel_FL__Tread_grooves_0": 3.8531489110482653e-10,
+    "FR_brake_disc_0": 8.507353710385246e-10,
+    "FR_tire_0": 7.132315182900584e-09,
+    "FR_tire_size_0": 1.363220369920981e-08,
+    "wheel_FR__Recesses_0": 5.703027383674453e-09,
+    "wheel_FR__Rim_edge_metal_0": 2.829716239105551e-09,
+    "wheel_FR__Speedline_satin_alloy_0": 3.2863924914749987e-09,
+    "wheel_FR__Steel_0": 1.3020248212924912e-09,
+    "wheel_FR__Tread_grooves_0": 7.331121931741791e-09,
+    "RL_brake_disc_0": 8.134052320585283e-10,
+    "RL_tire_0": 3.7120817530933437e-10,
+    "RL_tire_size_0": 2.2471942306978576e-08,
+    "wheel_RL__Recesses_0": 7.197879847709032e-09,
+    "wheel_RL__Rim_edge_metal_0": 2.541670762745696e-09,
+    "wheel_RL__Speedline_satin_alloy_0": 4.1413883433705223e-10,
+    "wheel_RL__Steel_0": 2.0982714454831353e-09,
+    "wheel_RL__Tread_grooves_0": 3.8531489110482653e-10,
+    "RR_brake_disc_0": 8.507353710385246e-10,
+    "RR_tire_0": 7.132315182900584e-09,
+    "RR_tire_size_0": 1.363220369920981e-08,
+    "wheel_RR__Recesses_0": 5.409082071139437e-09,
+    "wheel_RR__Rim_edge_metal_0": 2.5357709265705353e-09,
+    "wheel_RR__Speedline_satin_alloy_0": 3.5803378040100142e-09,
+    "wheel_RR__Steel_0": 1.3020248212924912e-09,
+    "wheel_RR__Tread_grooves_0": 7.331121931741791e-09
+  },
+  "pivots_world_m": {
+    "wheel_FL": [
+      1.210000038,
+      0.287499994,
+      -0.680000007
+    ],
+    "wheel_FR": [
+      1.210000038,
+      0.287499994,
+      0.680000007
+    ],
+    "wheel_RL": [
+      -1.210000038,
+      0.287499994,
+      -0.680000007
+    ],
+    "wheel_RR": [
+      -1.210000038,
+      0.287499994,
+      0.680000007
+    ],
+    "steering_wheel": [
+      0.25999999,
+      0.839999974,
+      -0.340000004
+    ]
+  },
+  "files": {
+    "ferro": {
+      "name": "peugeot-205-gti.ferro.json.gz",
+      "bytes": 4344525,
+      "sha256": "13d83b140ec4578b09e18d0c557d02f03bed817ef32f3930057710e0de8929bc"
+    },
+    "glb": {
+      "name": "peugeot-205-gti.glb",
+      "bytes": 1954692,
+      "sha256": "3d4979cf10d66058228eec3bbe64311f14f7e1bb57856b26fca829a289c644ad"
+    }
+  }
+}
