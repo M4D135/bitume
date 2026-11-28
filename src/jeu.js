@@ -7286,12 +7286,14 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      // FERRO 0.3.39 : la scène WebGPU est en radiance linéaire, composée une seule fois par post.wgsl. Le tonemap
-      // « ferro » garde la courbe de 0.3.38 (BITUME rend en WebGPU seul, sous Chrome comme sous Safari) ; seul le halo,
-      // plus large et ajouté en radiance, éclaircit un peu les zones sombres ; sa force (bloomStrength) reste à 1, défaut
-      // de FERRO. Essai du 28/11 (David : « Essayer AgX ») : ?rendu=agx rend avec AgX, défaut du moteur. Les rétroviseurs
-      // suivent le moteur principal (creerMoteurRetro) et le verre du saute-vent la courbe de son moteur.
-      const tonemap = /[?&]rendu=agx(?:&|$)/.test(window.location?.search || '') ? 'agx' : 'ferro';
+      // FERRO 0.3.39 : la scène WebGPU est en radiance linéaire, composée une seule fois par post.wgsl, avec le halo
+      // Dual-Kawase à sa force par défaut (bloomStrength 1). Tonemap AgX, défaut du moteur, depuis 0.2.353 (David, 28/11,
+      // après l'essai : « fais au mieux, moi je vois pas difference ») : noirs plus profonds, hautes lumières qui tournent
+      // au blanc sans virer, et l'habitacle que le halo éclaircissait retrouve au sec ses sombres de 0.2.350. FERRO ne
+      // garde la courbe « ferro » que pour une image identique sous WebGL2 ; BITUME rend en WebGPU seul. ?rendu=ferro
+      // redonne la courbe de 0.3.38. Les rétroviseurs suivent le moteur principal (creerMoteurRetro) et le verre du
+      // saute-vent la courbe de son moteur.
+      const tonemap = /[?&]rendu=ferro(?:&|$)/.test(window.location?.search || '') ? 'ferro' : 'agx';
       const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: true }, tonemap };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique

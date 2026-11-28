@@ -511,5 +511,6 @@ Au premier lancement d’une version, mesurer les performances sur le périphér
   Aucun agent ne modélise ces voitures ; leur intégration attend que leurs modèles soient sur le dépôt et que
   David la demande.
 - Rendu (FERRO 0.3.40) : devant les captures ferro et AgX de 0.2.351 (`docs/reprise/rapports/ferro-0340/`), David a
-  choisi « Essayer AgX ». 0.2.352 rend avec AgX quand l'adresse porte `?rendu=agx` ; sans ce paramètre, le défaut reste
-  le tonemap `ferro`. Le défaut ne change que sur sa décision, après son essai. La force du halo reste à 1.
+  choisi « Essayer AgX ». 0.2.352 rendait avec AgX quand l'adresse portait `?rendu=agx`, ferro sinon. Après l'essai :
+  « fais au mieux, moi je vois pas difference ». Depuis 0.2.353, AgX est le défaut (celui de FERRO) ; `?rendu=ferro`
+  redonne la courbe de 0.3.38. La force du halo reste à 1.

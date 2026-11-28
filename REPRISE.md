@@ -3,6 +3,22 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**28 novembre (soir) — AgX par défaut : 0.2.353 poussée sur `origin/main` (commit « 0.2.353 : AgX par défaut… »).**
+- **Décision** : après l'essai de 0.2.352, David : « fais au mieux, moi je vois pas difference ». AgX devient le défaut,
+  comme dans FERRO :
+  - courbe de référence du moteur depuis 0.3.39 ;
+  - hautes lumières (soleil, reflets, flammes) qui tournent au blanc sans virer de teinte ;
+  - au sec, l'habitacle retrouve les sombres de 0.2.350 que le halo de 0.3.39 éclaircissait (zones sombres −0,005,
+    contre +0,026 en ferro) ;
+  - FERRO ne garde la courbe ferro que pour une image identique sous WebGL2, et BITUME rend en WebGPU seul ;
+  - aucun coût : 60 images/s sur les neuf circuits (relevé de 0.2.352).
+
+  Sous la pluie, l'image est un peu plus sombre qu'en 0.2.350 (zones sombres −0,031).
+- **Adresse** : `?rendu=ferro` redonne la courbe de 0.3.38 ; `?rendu=agx` reste accepté, même rendu que le défaut.
+- **Contrôle** : sans paramètre, captures identiques au pixel près à l'AgX de 0.2.352 (piste, pluie) ; `?rendu=ferro`
+  identique au ferro de 0.2.352 ; moteur en agx (exposition 0,870119) ou en ferro selon l'adresse, sans erreur ;
+  suite : 256 fichiers, 47 en échec, les mêmes qu'en 0.2.350.
+
 **28 novembre (fin d'après-midi) — essai d'AgX : 0.2.352 (`d707210`) en ligne, déployée vers 16 h 42 sur le GO de David (« Oui, mets en ligne »).**
 - **En production (`https://bitume.estrasse.fr/`)** : **0.2.352** (`d707210`, sha256 `105820bdb0f0f0d7`, salon actif, non relancé) ;
   AgX par `https://bitume.estrasse.fr/?rendu=agx`. Sur amiga restent 0.2.350 (`3433896`) et 0.2.345 (`d82f5e1`) ; `7349601`
